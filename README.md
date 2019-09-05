@@ -18,7 +18,7 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 打成jar包，解压  META-INF目录下 MANIFEST.MF 
 
-![1567653220045](E:\study\springboot\spring-boot\assets\1567653220045.png)
+![ image ](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png)
 
 引入依赖
 
