@@ -43,6 +43,36 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654475580.png)
 
+main方法点进去
+
+![image](E:\study\springboot\spring-boot\assets\1567669076427.png)
+
+**第一句**
+
+![image](E:\study\springboot\spring-boot\assets\1567669133123.png)
+
+设置值：k   v（追加 springboot.loader） 清空URLStreamHandler
+
+发现：
+
+![image](E:\study\springboot\spring-boot\assets\1567669344118.png)
+
+也就是说：URLStreamHandler 对应着不同的 protocol 
+
+![image](E:\study\springboot\spring-boot\assets\1567669494641.png)
+
+​	去查看 org.springframework.boot.loader.jar.Handler  注释写着 for Spring Boot loader {@link JarFile}s.
+
+​	而JarFile  扩展了java.util.JarFile   也就是 springboot项目jar文件的抽象
+
+​	org.springframework.boot.loader.jar.Handler 就是用于处理 jar文件的内建工作(替换 sun.net.www.protocol.jar的jar 内
+
+​	建)，话说为什么要替换呢？是因为 springboot的 jar/war 除了传统的Java JAR中的资源外，还包含以来的JAR文件，
+
+​	也就是说  springboot的 jar/war  是个独立的应用归档文件
+
+
+
 # 3.依赖
 
 # 4.嵌入式容器
