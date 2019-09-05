@@ -67,9 +67,15 @@ main方法点进去
 
 ​	org.springframework.boot.loader.jar.Handler 就是用于处理 jar文件的内建工作(替换 sun.net.www.protocol.jar的jar 内
 
-​	建)，话说为什么要替换呢？是因为 springboot的 jar/war 除了传统的Java JAR中的资源外，还包含以来的JAR文件，
+​	建)，话说为什么要替换呢？（可以试试 java xxx 看是否可以启动）是因为 springboot的 jar/war 除了传统的Java JAR
 
-​	也就是说  springboot的 jar/war  是个独立的应用归档文件
+​	中的资源外，还包含以来的JAR文件，也就是说  springboot的 jar/war  是个独立的应用归档文件
+
+​	
+
+​	下面代码是如何获取URLStreamHandler 
+
+![1567670589618](E:\study\springboot\spring-boot\assets\1567670589618.png)
 
 
 
