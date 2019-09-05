@@ -81,7 +81,7 @@ main方法点进去
 
 第二句： getClassPathArchives()  Archive资源  进而获取类加载器
 
-![image](E:\study\springboot\spring-boot\assets\1567672332232.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672332232.png)
 
 
 
