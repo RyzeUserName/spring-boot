@@ -2,7 +2,7 @@
 
 # 1.总览
 
-​	spring ioc 实现方式JNDI  DI的EJB容器的注入
+​	spring ioc 实现方式JNDI  DI是EJB容器的注入
 
 ​	spring aop 事务简化
 
@@ -36,6 +36,12 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654046850.png)
+
+支持jar启动和文件系统两种启动方式
+
+结构如下：
+
+![1567654475580](E:\study\springboot\spring-boot\assets\1567654475580.png)
 
 # 3.依赖
 
