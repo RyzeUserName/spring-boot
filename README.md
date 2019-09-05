@@ -73,7 +73,7 @@ main方法点进去
 
 ​	
 
-​	下面代码是如何获取URLStreamHandler 
+​	扩展：下面代码是如何获取URLStreamHandler 
 
 ![1567670589618](E:\study\springboot\spring-boot\assets\1567670589618.png)
 
