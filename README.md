@@ -35,6 +35,8 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654046850.png)
+
 # 3.依赖
 
 # 4.嵌入式容器
