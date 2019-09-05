@@ -114,7 +114,19 @@ WarLauncher  跟JarLauncher 区别不大 文件结构不同
 
 # 3.依赖
 
+spring-boot-starter-parent  springboot 插件，版本管理（简化pom管理）
+
+spring-boot-starter-dependencies  各种依赖
+
+可以自定义parent 建议继承 spring-boot-starter-parent 
+
 # 4.嵌入式容器
+
+1.tomcat
+
+2.Jetty
+
+3.Undertow
 
 # 5.自动装配
 
