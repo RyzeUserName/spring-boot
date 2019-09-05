@@ -8,9 +8,30 @@
 
 ​	spring mvc  
 
-​	
-
 # 2.入门
+
+org.springframework.boot.loader.JarLauncher   jar 文件的
+
+org.springframework.boot.loader.WarLauncher   war文件的启动器
+
+创建springboot 项目
+
+打成jar包，解压  META-INF目录下 MANIFEST.MF 
+
+![1567653220045](E:\study\springboot\spring-boot\assets\1567653220045.png)
+
+引入依赖
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-loader -->
+<dependency>    
+    <groupId>org.springframework.boot</groupId>   
+    <artifactId>spring-boot-loader</artifactId>    
+    <scope>provided</scope>
+</dependency>
+```
+
+
 
 # 3.依赖
 
