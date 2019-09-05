@@ -10,15 +10,17 @@
 
 # 2.入门
 
-org.springframework.boot.loader.JarLauncher   jar 文件的
 
-org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 创建springboot 项目
 
 打成jar包，解压  META-INF目录下 MANIFEST.MF 
 
 ![ image ](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png)
+
+org.springframework.boot.loader.JarLauncher   jar 文件的
+
+org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 引入依赖
 
