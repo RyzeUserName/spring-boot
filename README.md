@@ -41,7 +41,7 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 结构如下：
 
-![1567654475580](E:\study\springboot\spring-boot\assets\1567654475580.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654475580.png)
 
 # 3.依赖
 
