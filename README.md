@@ -110,6 +110,8 @@ WarLauncher  跟JarLauncher 区别不大 文件结构不同
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567673740857.png)
 
+打包成WAR文件是一种兼容措施，既能WarLauncher   也能Servlet容器，建议使用费WEB部署，尽可能使用JAR归档方式
+
 # 3.依赖
 
 # 4.嵌入式容器
