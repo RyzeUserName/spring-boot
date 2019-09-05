@@ -87,6 +87,29 @@ main方法点进去
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672972248.png)
 
+JarLauncher 实际上是同进程调用Start-Class的main方法
+
+WarLauncher  跟JarLauncher 区别不大 文件结构不同
+
+将项目打成war
+
+```xml
+<packaging>war</packaging>
+```
+
+需要依赖：
+
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+如图：
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567673740857.png)
+
 # 3.依赖
 
 # 4.嵌入式容器
