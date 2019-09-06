@@ -259,6 +259,10 @@ springboot的默认是嵌入式tomcat
 
 # 5.自动装配
 
+从注解 @EnableAutoConfiguration 开始
+
+
+
 # 6.Production-Ready
 
 # 7.注解
