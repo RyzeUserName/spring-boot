@@ -132,9 +132,130 @@ spring-boot-starter-dependencies  各种依赖
 
 **Reactive Web 容器**
 
-以上容器也可做Reactive Web 容器
+以上容器也可做Reactive Web 容器，默认实现是Netty Web Server
 
-4.webFlux 
+4.webFlux （Reactor/Netty 整合实现）
+
+springboot 可以通过指定容器的Maven 依赖切换容器，无需代码调整
+
+加入代码，查看当前应用容器的实现
+
+```java
+//    /**
+//     * 非web 环境下 WebServerApplicationContext 会被注入失败
+//     * @param applicationContext
+//     * @return
+//     */
+//    @Bean
+//    public ApplicationRunner runner(WebServerApplicationContext applicationContext) {
+//        return args -> System.out.println("当前webServer实现" + applicationContext.getWebServer().getClass().getName());
+//    }
+
+@EventListener(WebServerInitializedEvent.class)
+public void onWebServerRead(WebServerInitializedEvent webServerInitializedEvent) {    System.out.println("当前webServer实现" + 		  webServerInitializedEvent.getWebServer().getClass().getName());
+ }
+```
+
+## 1.嵌入式Servlet Web容器
+
+
+### 1.Tomcat
+
+Tomcat的Maven插件并非 嵌入式的容器，而是将WAR包归档到ROOT目录而已
+
+springboot的默认是嵌入式tomcat
+
+### 2.Jetty
+
+修改依赖：
+
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-web</artifactId>    
+    <exclusions>        
+        <exclusion>            
+            <groupId>org.springframework.boot</groupId>            
+            <artifactId>spring-boot-starter-tomcat</artifactId>        
+        </exclusion>    
+    </exclusions>
+</dependency>
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+
+### 3.Undertow
+
+修改依赖：
+
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-web</artifactId>    
+    <exclusions>        
+        <exclusion>            
+            <groupId>org.springframework.boot</groupId>            
+            <artifactId>spring-boot-starter-tomcat</artifactId>        
+        </exclusion>    
+    </exclusions>
+</dependency>
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+```
+
+## 2.嵌入式Reactive Web容器
+
+注意：spring-boot-starter-web 依赖和 spring-boot-starter-webflux依赖同时共存，后者会被忽略
+
+所以，先去掉 spring-boot-starter-web 依赖
+
+### 1.Undertow
+
+修改依赖：
+
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+```
+
+### 2.Jetty
+
+修改依赖:
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+```
+
+### 3.Tomcat
+
+修改依赖：
+
+```xml
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+</dependency>
+<dependency>    
+    <groupId>org.springframework.boot</groupId>    
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+```
 
 # 5.自动装配
 
