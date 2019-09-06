@@ -122,11 +122,19 @@ spring-boot-starter-dependencies  各种依赖
 
 # 4.嵌入式容器
 
+**servlet容器**
+
 1.tomcat
 
 2.Jetty
 
 3.Undertow
+
+**Reactive Web 容器**
+
+以上容器也可做Reactive Web 容器
+
+4.webFlux 
 
 # 5.自动装配
 
