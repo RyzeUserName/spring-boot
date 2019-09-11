@@ -265,6 +265,24 @@ springboot的默认是嵌入式tomcat
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568195369100.png)
 
+是个组合注解，把这三个注解替换掉 注解SpringBootApplication，启动正常，没有区别
+
+1.@ComponentScan 注解
+
+表示扫描的范围,xml 中的 < context:component-scan > ，没写扫描范围（ basePackages） 默认是打这个注解的类所在
+
+包 
+
+FilterType.CUSTOM  使用自定义的过滤器处理
+
+TypeExcludeFilter 
+
+![image](E:\study\springboot\spring-boot\assets\1568197614539.png)
+
+AutoConfigurationExcludeFilter
+
+
+
 
 
 # 6.Production-Ready
