@@ -259,7 +259,11 @@ springboot的默认是嵌入式tomcat
 
 # 5.自动装配
 
-从注解 @EnableAutoConfiguration 开始
+从注解 @SpringBootApplication开始
+
+点开查看到
+
+![image](E:\study\springboot\spring-boot\assets\1568195369100.png)
 
 
 
