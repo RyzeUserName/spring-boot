@@ -259,15 +259,17 @@ springboot的默认是嵌入式tomcat
 
 # 5.自动装配
 
-从注解 @SpringBootApplication开始
+从注解 @SpringBootApplication开始 
 
-点开查看到
+点开查看到   
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568195369100.png)
 
-是个组合注解，把这三个注解替换掉 注解SpringBootApplication，启动正常，没有区别
+@AliasFor 桥接其他注解的关键，也就是起了个别名而已。
 
-1.@ComponentScan 注解
+故 @SpringBootApplication 是个组合注解，把这三个注解替换掉 注解SpringBootApplication，启动正常，没有区别
+
+## 1.@ComponentScan 注解
 
 表示扫描的范围,xml 中的 < context:component-scan > ，没写扫描范围（ basePackages） 默认是打这个注解的类所在
 
@@ -275,13 +277,21 @@ springboot的默认是嵌入式tomcat
 
 FilterType.CUSTOM  使用自定义的过滤器处理
 
-TypeExcludeFilter 
+TypeExcludeFilter -> 把过滤器都 弄出来作为代理执行对象 过滤
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197614539.png)
 
 AutoConfigurationExcludeFilter
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197776836.png)
+
+## 2.@SpringBootConfiguration
+
+SpringBootConfiguration   派生自 Configuration
+
+Configuration  派生自  Component
+
+ 
 
 
 
