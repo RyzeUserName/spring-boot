@@ -277,7 +277,7 @@ FilterType.CUSTOM  使用自定义的过滤器处理
 
 TypeExcludeFilter 
 
-![image](E:\study\springboot\spring-boot\assets\1568197614539.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197614539.png)
 
 AutoConfigurationExcludeFilter
 
