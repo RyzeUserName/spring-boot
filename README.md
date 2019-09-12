@@ -303,6 +303,12 @@ Configuration 中为Cglib 加强
 
 
 
+结合使用   @ConditionalOnMissingBean  （备用的意思->当标注的目标类不存在 则初始化）
+
+​				 @ConditionalOnClass  （优先什么）
+
+​	 当以上类标注在@Configuration 类上，当且当该类在Class path下才予以装配
+
 # 6.Production-Ready
 
 # 7.注解
