@@ -291,7 +291,15 @@ SpringBootConfiguration   派生自 Configuration
 
 Configuration  派生自  Component
 
- 
+##  3.@EnableAutoConfiguration
+
+开启自动装配
+
+
+
+注意：@Configuration 中的@Bean 与 @Component 中的@Bean 区别在于，Component 中为Lite模式
+
+Configuration 中为Cglib 加强
 
 
 
