@@ -331,6 +331,12 @@ Configuration 中为Cglib 加强
 
 ​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568773976826.png)
 
+  很容易找到 web 自动装配
+
+EmbeddedWebServerFactoryCustomizerAutoConfiguration
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568775996622.png)
+
 # 6.Production-Ready
 
 # 7.注解
