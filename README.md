@@ -309,6 +309,26 @@ Configuration 中为Cglib 加强
 
 ​	 当以上类标注在@Configuration 类上，当且当该类在Class path下才予以装配
 
+ 
+
+​	以HSQLDB为例：
+
+​		查看spring boot 依赖 org.springframework.boot.autoconfigure 顾名思义就是自动装配
+
+​		打开包 找到jdbc包 第一看到DataSourceAutoConfiguration   顾名思义 数据源的自动装配
+
+​		![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772241327.png)	
+
+​	导入的类 ：
+
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772287670.png)
+
+​	枚举：
+
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772589838.png)
+
+
+
 # 6.Production-Ready
 
 # 7.注解
