@@ -327,7 +327,9 @@ Configuration 中为Cglib 加强
 
 ​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772589838.png)
 
+​	那么 DataSourceAutoConfiguration    怎么装配的呢？
 
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568773976826.png)
 
 # 6.Production-Ready
 
