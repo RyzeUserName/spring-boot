@@ -339,7 +339,30 @@ EmbeddedWebServerFactoryCustomizerAutoConfiguration
 
 # 6.Production-Ready
 
-# 7.注解
+Spring Boot Actuator: Production-ready features
+
+Spring Boot includes a number of additional features to help you monitor and manage your application when you push it to production. You can choose to manage and monitor your application by using HTTP endpoints or with JMX. Auditing, health, and metrics gathering can also be automatically applied to your application.
+
+监管媒介：HTTP 或者 JMX.
+
+端点类型：Auditing（审计）, health（健康）, and metrics gathering （指标收集）
+
+
+
+引入依赖：
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+```
+
+
+
+# 7.走向注解驱动编程
+
+
 
 # 8.注解驱动设计模式
 
