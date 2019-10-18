@@ -398,11 +398,29 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 ​	java 的 元注解  @Target  @Retention  @Documented  以及java8的@Repeatable
 
-​	Spring 场景下 就是  @Component  @Repository  @Service
+​	Spring 场景下 就是  @Component  
 
 ### 	2.Spirng 模式注解
 
+#### 		1."派生"
 
+​		@Repository  @Service @Controller @RestController  @Configuration 等  均被   @Component  元注解 标
+
+​		注称为 @Component   注解的“派生”，由于java 注解不允许继承，因此Spring 采用元注解 标注方式实现 注解间的
+
+​		“派生”
+
+#### 	2.“派生性”
+
+​		注解的扫描是 从标签< context: component-scan> 开始的
+
+​		自 Spring 2.0开始 xml的配置文件的文档结构从DTD 变成XML Schema，同时引入可扩展的XML编写机制
+
+​		
+
+​	
+
+​		
 
 ### 	3.Spring 组合注解
 
