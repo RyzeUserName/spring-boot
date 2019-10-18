@@ -358,11 +358,55 @@ Spring Boot includes a number of additional features to help you monitor and man
         </dependency>
 ```
 
-
-
 # 7.走向注解驱动编程
 
+​	自java 5 注解 发布，spring 就开始了 自己的注解之路，逐步替换xml
 
+## 	1.核心注解场景分类：
+
+​		
+
+| Spring 注解      | 场景                                     | 起始版本 |
+| ---------------- | ---------------------------------------- | -------- |
+| @Repository      | dao层模式注解                            | 2.0      |
+| @Component       | 通用组件模式注解                         | 2.5      |
+| @Service         | Service层注解                            | 2.5      |
+| @Controller      | web层注解                                | 2.5      |
+| @Configuration   | 配置类模式注解                           | 3.0      |
+| @ImportResource  | 指示一个或多个包含要导入的bean定义的资源 | 2.5      |
+| @Import          | 导入                                     | 2.5      |
+| @ComponentScan   | 扫描指定目录下的类                       | 3.1      |
+| @Autowired       | bean 依赖注入                            | 2.5      |
+| @Qualifier       | 细粒度的Autowired 使用                   | 2.5      |
+| @Bean            | bean                                     | 3.0      |
+| @DependsOn       | 控制bean加载顺序                         | 3.0      |
+| @Lazy            | 懒加载                                   | 3.0      |
+| @Primary         | 优先级                                   | 3.0      |
+| @Role            | 指明角色                                 | 3.1      |
+| @Lookup          | 非单例注入                               | 4.1      |
+| @Profile         | 配置化条件装配                           | 3.1      |
+| @Conditional     | 编程条件装配                             | 3.1      |
+| @PropertySource  | 配置属性抽象                             | 3.1      |
+| @PropertySources | PropertySource 集合                      | 4.0      |
+| @PostConstruct   | bean 生命周期的 初始化前                 | 2.5      |
+| @PreDestory      | bean 生命周期的 销毁前                   | 2.5      |
+| @AliasFor        | 别名                                     | 4.2      |
+| @Indexed         | 索引注解                                 | 5.0      |
+## 2.注解编程模型
+
+### 	1.元注解
+
+​	java 的 元注解  @Target  @Retention  @Documented  以及java8的@Repeatable
+
+​	Spring 场景下 就是  @Component  @Repository  @Service
+
+### 	2.Spirng 模式注解
+
+
+
+### 	3.Spring 组合注解
+
+### 	4.Spring 注解属性和覆盖
 
 # 8.注解驱动设计模式
 
