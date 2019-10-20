@@ -428,7 +428,7 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 ​		2. component-scan 找到 是在 spring-context  spring.handlers  中
 
-​		![1571554645199](E:\study\springboot\spring-boot\assets\1571554645199.png)
+​		![1571554645199](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554645199.png)
 
 
 
@@ -436,35 +436,35 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 
 
-![1571554667278](E:\study\springboot\spring-boot\assets\1571554667278.png)
+![1571554667278](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554667278.png)
 
 ![1571554685040](E:\study\springboot\spring-boot\assets\1571554685040.png)
 
 
 
-![1571554694457](E:\study\springboot\spring-boot\assets\1571554694457.png)
+![1571554694457](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554694457.png)
 
 
 
 ![1571554701360](E:\study\springboot\spring-boot\assets\1571554701360.png)
 
-![1571554708632](E:\study\springboot\spring-boot\assets\1571554708632.png)
+![1571554708632](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554708632.png)
 
 
 
-![1571554721030](E:\study\springboot\spring-boot\assets\1571554721030.png)
+![1571554721030](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554721030.png)
 
 
 
-![1571554729468](E:\study\springboot\spring-boot\assets\1571554729468.png)
+![1571554729468](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554729468.png)
 
 
 
-![1571554736593](E:\study\springboot\spring-boot\assets\1571554736593.png)
+![1571554736593](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554736593.png)
 
 
 
-![1571554743863](E:\study\springboot\spring-boot\assets\1571554743863.png)
+![1571554743863](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554743863.png)
 
 ### 	3.Spring 组合注解
 
