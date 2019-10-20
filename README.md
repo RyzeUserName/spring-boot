@@ -412,15 +412,59 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 #### 	2.“派生性”
 
-​		注解的扫描是 从标签< context: component-scan> 开始的
+​		1.注解的扫描是 从标签< context: component-scan> 开始的
 
 ​		自 Spring 2.0开始 xml的配置文件的文档结构从DTD 变成XML Schema，同时引入可扩展的XML编写机制
 
-​		
+​		（也就是  自定义  xml schema  的 xsd文件  ，然后定义 标签解析器  将解析器 注册到  NamespaceHandlerSupport
 
-​	
+​		在 META-INF  新建spring.handlers和spring.schemas文件
 
-​		
+​		spring.schemas 文件 http\://www.bytebeats.com/schema/rpc/rpc.xsd=/META-INF/rpc.xsd   自定义的地址=xsd文件
+
+​		spring.handlers 文件http\://www.bytebeats.com/schema/rpc=com.bytebeats.spring4.extension.xml.RpcNamespace
+
+​		Handler      自定义的地址 =   注册解析器 的类 ）
+
+​		2. component-scan 找到 是在 spring-context  spring.handlers  中
+
+​		![1571554645199](E:\study\springboot\spring-boot\assets\1571554645199.png)
+
+
+
+![1571554659141](E:\study\springboot\spring-boot\assets\1571554659141.png)
+
+
+
+![1571554667278](E:\study\springboot\spring-boot\assets\1571554667278.png)
+
+![1571554685040](E:\study\springboot\spring-boot\assets\1571554685040.png)
+
+
+
+![1571554694457](E:\study\springboot\spring-boot\assets\1571554694457.png)
+
+
+
+![1571554701360](E:\study\springboot\spring-boot\assets\1571554701360.png)
+
+![1571554708632](E:\study\springboot\spring-boot\assets\1571554708632.png)
+
+
+
+![1571554721030](E:\study\springboot\spring-boot\assets\1571554721030.png)
+
+
+
+![1571554729468](E:\study\springboot\spring-boot\assets\1571554729468.png)
+
+
+
+![1571554736593](E:\study\springboot\spring-boot\assets\1571554736593.png)
+
+
+
+![1571554743863](E:\study\springboot\spring-boot\assets\1571554743863.png)
 
 ### 	3.Spring 组合注解
 
