@@ -513,21 +513,19 @@ public class BootHelloApplication {
 
 还是上面的代码
 
-![1571648917786](E:\study\springboot\spring-boot\assets\1571648917786.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648917786.png)
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648932784.png)
 
-
-![1571648932784](E:\study\springboot\spring-boot\assets\1571648932784.png)
-
-![1571648942553](E:\study\springboot\spring-boot\assets\1571648942553.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648942553.png)
 
 关于 注解处理
 
-![1571649768630](E:\study\springboot\spring-boot\assets\1571649768630.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649768630.png)
 
-![1571649777203](E:\study\springboot\spring-boot\assets\1571649777203.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649777203.png)
 
-![1571649786081](E:\study\springboot\spring-boot\assets\1571649786081.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649786081.png)
 
 ### 	3.Spring 组合注解
 
