@@ -466,6 +466,69 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554743863.png)
 
+**注意**：
+
+1.ClassPathBeanDefinitionScanner 类的创建过程中
+
+默认添加 Component 注解的扫描，那么标注了 Component 的都会被扫描到（Repository,Controller,Service） 等 
+
+2.ClassPathBeanDefinitionScanner 支持自定义的类型过滤规则  例如 Dubbo 的service 就是通过自定义扫描规则 实现
+
+3.其实，扫描的注解 还有java 的注解Named 以及 ManagedBean
+
+#### 3.多层次”派生性“
+
+注解 SpringBootApplication 	
+
+​			-SpringBootConfiguration
+
+​				-Configuration
+
+​					-Component
+
+​		修改 springboot 的启动类
+
+```java
+public class BootHelloApplication {
+
+    public static void main(String[] args) {
+        Class<BootHelloApplication> bootHelloApplicationClass = BootHelloApplication.class;
+        //非 web 环境
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(bootHelloApplicationClass).web(WebApplicationType.NONE).run();
+        System.out.println("当前引导类" + context.getBean(bootHelloApplicationClass));
+        context.close();
+    }
+}
+```
+
+启动后 ：
+
+当前引导类com.example.boothello.BootHelloApplication$$EnhancerBySpringCGLIB$$e650376@10b892d5
+
+也就是说 Component 注解 有多层次功能                                                                                                 
+
+**该特性在Spring 3.0 开始支持**
+
+#### 4.派生性原理
+
+还是上面的代码
+
+![1571648917786](E:\study\springboot\spring-boot\assets\1571648917786.png)
+
+
+
+![1571648932784](E:\study\springboot\spring-boot\assets\1571648932784.png)
+
+![1571648942553](E:\study\springboot\spring-boot\assets\1571648942553.png)
+
+关于 注解处理
+
+![1571649768630](E:\study\springboot\spring-boot\assets\1571649768630.png)
+
+![1571649777203](E:\study\springboot\spring-boot\assets\1571649777203.png)
+
+![1571649786081](E:\study\springboot\spring-boot\assets\1571649786081.png)
+
 ### 	3.Spring 组合注解
 
 ### 	4.Spring 注解属性和覆盖
