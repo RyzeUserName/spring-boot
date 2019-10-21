@@ -527,6 +527,10 @@ public class BootHelloApplication {
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649786081.png)
 
+RuntimeVisibleTypeAnnotations 父类的注解  （@Inherited ）
+
+**注意：** Spring 4.0 之后开始支持 多层次递归注解（之前的（3.0后） 要么支持 2层 要么支持 一层）
+
 ### 	3.Spring 组合注解
 
 ### 	4.Spring 注解属性和覆盖
