@@ -529,13 +529,432 @@ public class BootHelloApplication {
 
 RuntimeVisibleTypeAnnotations 父类的注解  （@Inherited ）
 
-**注意：** Spring 4.0 之后开始支持 多层次递归注解（之前的（3.0后） 要么支持 2层 要么支持 一层）
+**注意：** Spring 4.0 之后开始支持 多层次递归注解（之前的（3.0后） 要么支持 两层 要么支持 一层）
 
 ### 	3.Spring 组合注解
 
+所谓组合注解 就是将一个注解上标注其他的一个或者多个注解，组合出注解的意思
 
 
-### 	4.Spring 注解属性和覆盖
+
+上一节，派生性原理 也看到，spring并不是通过反射来处理注解，而是通过ASM （classReader)，读取类资源，直接操作
+
+其中字节码，获取相关元信息，同时便于Spring字节码提升，以下是类似spring 获取注解代码
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Service
+@Transactional
+public @interface MyAnnotion {
+}
+
+@MyAnnotion
+public class Test1 {
+    public static void main(String[] args) throws IOException {
+        String name = Test1.class.getName();
+        MetadataReaderFactory cachingMetadataReaderFactory = new CachingMetadataReaderFactory();
+        MetadataReader metadataReader = cachingMetadataReaderFactory.getMetadataReader(name);
+        AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
+        annotationMetadata.getAnnotationTypes().forEach(type -> {
+            Set<String> metaAnnotationTypes = annotationMetadata.getMetaAnnotationTypes(type);
+            metaAnnotationTypes.forEach(s -> System.out.println("注解是 " + s));
+        });
+    }
+}
+```
+
+```
+注解是 org.springframework.stereotype.Service
+注解是 org.springframework.stereotype.Component
+注解是 org.springframework.stereotype.Indexed
+注解是 org.springframework.transaction.annotation.Transactional
+```
+
+### 	4.Spring 注解别名和覆盖
+
+##### 1.java 反射方式  获取属性值
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Service
+@Transactional
+public @interface MyAnnotion {
+    String name() default "";
+}
+
+/**
+ *　测试注解　java 方式　　
+ * @author Ryze
+ * @date 2019-10-22 11:17
+ */
+@MyAnnotion(name = "名字")
+public class Test2 {
+    public static void main(String[] args) {
+        AnnotatedElement annotatedElement = Test2.class;
+        MyAnnotion annotation = annotatedElement.getAnnotation(MyAnnotion.class);
+        String name = annotation.name();
+        System.out.println("值是 --> " + name);
+        System.out.println("===========================");
+        ReflectionUtils.doWithMethods(MyAnnotion.class,
+            method -> System.out.println("方法名 -->" + method.getName()+"  值-->"+ReflectionUtils.invokeMethod(method,annotation)),
+            method -> !method.getDeclaringClass().equals(Annotation.class));
+    }
+}
+
+```
+
+结果:
+
+```
+值是 --> 名字
+===========================
+方法名 -->name  值-->名字
+```
+
+反射的方式 递归 获取全部的注解和值
+
+```java
+/**
+ * java 反射的方式 获取全部注解 和 值
+ * @author Ryze
+ * @date 2019-10-24 14:04
+ */
+@MyAnnotion
+public class Test3 {
+    public static void main(String[] args) {
+        AnnotatedElement annotatedElement = Test3.class;
+        MyAnnotion annotation = annotatedElement.getAnnotation(MyAnnotion.class);
+        Set<Annotation> allAnnotions = getAllAnnotions(annotation);
+        allAnnotions.forEach(Test3::printAnnotions);
+    }
+
+    static Set<Annotation> getAllAnnotions(Annotation annotation) {
+        Annotation[] annotations = annotation.annotationType().getAnnotations();
+        if (ObjectUtils.isEmpty(annotations)) {
+            return Collections.emptySet();
+        }
+        //过滤掉  java.lang.annotation 包下的基础注解
+        Set<Annotation> collect = Stream.of(annotations).filter(
+            a -> !Target.class.getPackage().equals(a.annotationType().getPackage())
+        ).collect(Collectors.toSet());
+        //递归
+        Set<Annotation> collect1 = collect.stream().map(Test3::getAllAnnotions).collect(HashSet::new, Set::addAll, Set::addAll);
+        //加起来
+        collect.addAll(collect1);
+        return collect;
+    }
+
+    static void printAnnotions(Annotation annotation) {
+        Class<? extends Annotation> aClass = annotation.annotationType();
+        ReflectionUtils.doWithMethods(aClass,
+            method -> System.out.println("注解-->" + aClass.getSimpleName() + "方法名 -->" + method.getName() + "  值-->" + ReflectionUtils.invokeMethod(method, annotation)),
+            method -> !method.getDeclaringClass().equals(Annotation.class));
+    }
+}
+
+```
+
+```
+注解-->Service方法名 -->value  值-->
+注解-->Component方法名 -->value  值-->
+注解-->Transactional方法名 -->value  值-->
+注解-->Transactional方法名 -->readOnly  值-->false
+注解-->Transactional方法名 -->isolation  值-->DEFAULT
+注解-->Transactional方法名 -->rollbackFor  值-->[Ljava.lang.Class;@1b4fb997
+注解-->Transactional方法名 -->propagation  值-->REQUIRED
+注解-->Transactional方法名 -->noRollbackFor  值-->[Ljava.lang.Class;@deb6432
+注解-->Transactional方法名 -->timeout  值-->-1
+注解-->Transactional方法名 -->noRollbackForClassName  值-->[Ljava.lang.String;@28ba21f3
+注解-->Transactional方法名 -->transactionManager  值-->
+注解-->Transactional方法名 -->rollbackForClassName  值-->[Ljava.lang.String;@694f9431
+```
+
+spring AnnotationMetadata 实现获取注解 和 值（也是反射）
+
+```java
+/**
+ * spring  AnnotationMetadata 实现获取注解 值  
+ * @author Ryze
+ * @date 2019-10-24 15:31
+ */
+@MyAnnotion
+public class Test4 {
+    public static void main(String[] args) {
+        AnnotationMetadata metadata = new StandardAnnotationMetadata(Test4.class);
+        Set<String> collect = metadata.getAnnotationTypes().stream().map(metadata::getMetaAnnotationTypes).collect(LinkedHashSet::new, Set::addAll, Set::addAll);
+        collect.stream().forEach(m -> {
+            Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(m);
+            if (!CollectionUtils.isEmpty(annotationAttributes)) {
+                annotationAttributes.forEach((k, v) ->
+                    System.out.println("注解 " + ClassUtils.getShortName(m) + "属性" + k + " = " + v));
+            }
+        });
+    }
+}
+
+```
+
+结果
+
+```
+注解 Service属性value = 
+注解 Transactional属性value = 
+注解 Transactional属性timeout = -1
+注解 Transactional属性readOnly = false
+注解 Transactional属性noRollbackForClassName = [Ljava.lang.String;@379619aa
+注解 Transactional属性transactionManager = 
+注解 Transactional属性rollbackForClassName = [Ljava.lang.String;@cac736f
+注解 Transactional属性isolation = DEFAULT
+注解 Transactional属性noRollbackFor = [Ljava.lang.Class;@5e265ba4
+注解 Transactional属性rollbackFor = [Ljava.lang.Class;@156643d4
+注解 Transactional属性propagation = REQUIRED
+注解 Component属性value = 
+```
+
+为什么spring 要实现两种 注解处理方式呢？
+
+基于java反射，需要的是类加载器（classLoader），然而 springboot 的自己归档的 jar 扫描加载 class时，根据注解才
+
+扫描加载，显然classLoader 加载已经不适合，因此基于ASM的加载在默认的扫描实现中出现。当然效率方面也有差距
+
+（asm 加载较快《作者测试，我并未校验，因素太多》），另外 StandardAnnotationMetadata 的方法调用链路较长
+
+##### 2.属性值的覆盖
+
+**java方式**
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Service("wwwwwwwwwww")
+@Transactional
+public @interface MyAnnotion1 {
+    String name() default "";
+}
+
+/**
+ * spring  属性值的覆盖
+ * @author Ryze
+ * @date 2019-10-24 15:31
+ */
+@MyAnnotion1
+public class Test5 {
+    public static void main(String[] args) {
+        AnnotationMetadata metadata = new StandardAnnotationMetadata(Test5.class);
+        Set<String> collect = metadata.getAnnotationTypes().stream().map(metadata::getMetaAnnotationTypes).collect(LinkedHashSet::new, Set::addAll, Set::addAll);
+        collect.stream().forEach(m -> {
+            Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(m);
+            if (!CollectionUtils.isEmpty(annotationAttributes)) {
+                annotationAttributes.forEach((k, v) ->
+                    System.out.println("注解 " + ClassUtils.getShortName(m) + "属性" + k + " = " + v));
+            }
+        });
+    }
+}
+
+```
+
+结果：
+
+```
+注解 Service属性value = wwwwwwwwwww
+注解 Transactional属性value = 
+注解 Transactional属性readOnly = false
+注解 Transactional属性timeout = -1
+注解 Transactional属性transactionManager = 
+注解 Transactional属性rollbackForClassName = [Ljava.lang.String;@379619aa
+注解 Transactional属性noRollbackForClassName = [Ljava.lang.String;@cac736f
+注解 Transactional属性rollbackFor = [Ljava.lang.Class;@5e265ba4
+注解 Transactional属性isolation = DEFAULT
+注解 Transactional属性noRollbackFor = [Ljava.lang.Class;@156643d4
+注解 Transactional属性propagation = REQUIRED
+注解 Component属性value = wwwwwwwwwww
+```
+
+看到service的 value 覆盖了Component  value ，我们查看  AnnotatedElementUtils 的 getMergedAnnotationAttributes
+
+注释写着：  
+
+```
+Attributes from lower levels in the annotation hierarchy override attributes* of the same name from higher levels
+注释层次结构中较低级别的属性会覆盖属性在更高级别的同名
+
+```
+
+也就是说 @service  比 @Component  更低级别
+
+ getAnnotationAttributes 返回值是Map<String, Object>  同名属性必然会覆盖，最外层的覆盖最内层的
+
+**spring 方式**
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+@Transactional
+@Service("txService")
+/**
+ * 注解测试  spring 读取注解
+ * @author Ryze
+ */
+public @interface MyAnnotation1 {
+    /**
+     * @return 名字
+     */
+    String name() default "";
+
+    /**
+     * @return 事务管理
+     */
+    String transactionManager() default "txManager";
+
+}
+/**
+ * 测试注解测试类
+ * @author Ryze
+ * @date 2019-10-28 18:09
+ */
+@MyAnnotation1
+public class TxService {
+    public void save() {
+        System.out.println("保存操作");
+    }
+}
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-10-28 18:10
+ */
+@ComponentScan(basePackageClasses = TxService.class)
+@EnableTransactionManagement
+public class TxBootStrap {
+    public static void main(String[] args) {
+        //注册当前引导类
+        AnnotationConfigApplicationContext bootStrap = new AnnotationConfigApplicationContext(TxBootStrap.class);
+        //获取 TxService 的bean
+        Map<String, TxService> beansOfType = bootStrap.getBeansOfType(TxService.class);
+        beansOfType.forEach((name, txService) -> {
+            System.out.printf("Bean 名称 : %s,对象: %s\n", name, txService);
+            txService.save();
+        });
+    }
+
+    @Bean("txManager")
+    public PlatformTransactionManager txManager() {
+        return new PlatformTransactionManager() {
+            @Override
+            public TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException {
+                return new SimpleTransactionStatus();
+            }
+
+            @Override
+            public void commit(TransactionStatus status) throws TransactionException {
+                System.out.println("txManager： 事务提交");
+            }
+
+            @Override
+            public void rollback(TransactionStatus status) throws TransactionException {
+                System.out.println("txManager： 事务回滚");
+            }
+        };
+    }
+
+    @Bean("txManager2")
+    public PlatformTransactionManager txManager2() {
+        return new PlatformTransactionManager() {
+            @Override
+            public TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException {
+                return new SimpleTransactionStatus();
+            }
+
+            @Override
+            public void commit(TransactionStatus status) throws TransactionException {
+                System.out.println("txManager2： 事务提交");
+            }
+
+            @Override
+            public void rollback(TransactionStatus status) throws TransactionException {
+                System.out.println("txManager2： 事务回滚");
+            }
+        };
+    }
+}
+
+
+
+
+
+```
+
+结果：
+
+```
+Bean 名称 : txService,对象: com.example.boothello.enumTest3.TxService@3c41ed1d
+保存操作
+txManager： 事务提交
+```
+
+看到  MyAnnotation1 的属性（方法） transactionManager 覆盖了 @Transactional 的同名 属性（方法）
+
+##### 3.理解属性值覆盖
+
+属性覆盖分为 隐式属性覆盖 （同名属性） 以上的例子 
+
+​					   显示属性覆盖   （@AliasFor 属性覆盖）
+
+我们着重 来看看 显示的属性覆盖
+
+就@Transaction  而言  value  相对于transactionManager 更要有语义，于是看到
+
+```java
+@AliasFor("transactionManager")
+	String value() default "";
+@AliasFor("value")
+	String transactionManager() default "";
+```
+
+也就是说 一个注解中两个属性 可以通过 @AliasFor 成对出现 命名别名，那么我们注释掉  MyAnnotation1  中的
+
+transactionManager 属性，修改成 value属性
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+@Transactional
+@Service("txService")
+/**
+ * 注解测试  spring 读取
+ * @author Ryze
+ */
+public @interface MyAnnotation1 {
+    /**
+     * @return 名字
+     */
+    String name() default "";
+
+//    /**
+//     * @return 事务管理
+//     */
+//    String transactionManager() default "txManager";
+
+    /**
+     * @return 值
+     */
+    String value() default "txManager";
+}
+```
+
+重新运行，并未打印出任何结果
+
+
 
 
 
