@@ -952,11 +952,56 @@ public @interface MyAnnotation1 {
 }
 ```
 
-重新运行，并未打印出任何结果
+重新运行，并未打印出任何结果 看到日志中
 
+```
+09:58:35.047 [main] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'txManager' with a different definition: replacing [Generic bean: class [com.example.boothello.enumTest3.TxService]; scope=singleton; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in file [E:\study\springboot\spring-boot\boot-hello\target\classes\com\example\boothello\enumTest3\TxService.class]] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=txBootStrap; factoryMethodName=txManager; initMethodName=null; destroyMethodName=(inferred); defined in com.example.boothello.enumTest3.TxBootStrap]
 
+```
 
+显示  TxService 被 txManager 取代 ，没有了 TxService 的bean 所以打印不出来。
 
+为什么会被取代？ MyAnnotation1 的 value  覆盖了 bean 的名字，成了 txManager  
+
+使用显示覆盖 调整代码：
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+@Transactional
+@Service("txService")
+/**
+ * 注解测试  spring 读取
+ * @author Ryze
+ */
+public @interface MyAnnotation1 {
+    /**
+     * @return 名字
+     */
+    String name() default "";
+    /**
+     * @return 覆盖事务管理
+     */
+    @AliasFor(annotation = Transactional.class,value = "value")
+    String tm() default "txManager";
+}
+```
+
+运行结果：
+
+```
+Bean 名称 : txService,对象: com.example.boothello.enumTest3.TxService@38425407
+保存操作
+txManager： 事务提交
+```
+
+@AliasFor　通注解中 别名覆盖 需要成对出现，并且默认值相等，单向的别名覆盖，从低级向高级 别名覆盖。如上！
+
+也就是说 spring 扩展了 注解
+
+通过AnnotationAttributes 表达语义（扩展: @EnableDubbo 也是如此实现）
 
 # 8.注解驱动设计模式
 

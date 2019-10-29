@@ -20,17 +20,23 @@ public @interface MyAnnotation1 {
     /**
      * @return 名字
      */
-    @AliasFor("value")
-    String name() default "txManager";
+    //@AliasFor("value")
+    String name() default "";
 
 //    /**
 //     * @return 事务管理
 //     */
 //    String transactionManager() default "txManager";
 
+//    /**
+//     * @return 值
+//     */
+//    @AliasFor("name")
+//    String value() default "txManager";
+
     /**
-     * @return 值
+     * @return 事务管理
      */
-    @AliasFor("name")
-    String value() default "txManager";
+    @AliasFor(annotation = Transactional.class,value = "value")
+    String tm() default "txManager";
 }

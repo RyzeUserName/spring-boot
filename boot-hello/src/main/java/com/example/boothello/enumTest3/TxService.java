@@ -7,6 +7,7 @@ package com.example.boothello.enumTest3;
  */
 @MyAnnotation1
 public class TxService {
+
     public void save() {
         System.out.println("保存操作");
     }
