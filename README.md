@@ -1307,6 +1307,36 @@ HTTP 实现停止
 
 ### 3.原理
 
+@Enable 模块 无论自定义 还是 spring 自建的，均使用@Import 实现，@Configuration 标注的类、实现ImportSelector 
+
+的类、实现ImportBeanDefinitionRegistrar的类
+
+**1. @Configuration  的类**
+
+查看 Configuration 注解
+
+```
+ *	<p>As an alternative to registering {@code @Configuration} classes directly against an
+ * {@code AnnotationConfigApplicationContext}, {@code @Configuration} classes may be
+ * declared as normal {@code <bean>} definitions within Spring XML files:
+ * <pre class="code">
+ * {@code
+ * <beans>
+ *    <context:annotation-config/>
+ *    <bean class="com.acme.AppConfig"/>
+ * </beans>}</pre>
+ *
+ * In the example above, {@code <context:annotation-config/>} is required in order to
+ * enable {@link ConfigurationClassPostProcessor} and other annotation-related
+ * post processors that facilitate handling {@code @Configuration} classes.
+```
+
+
+
+**2.ImportSelector 和ImportBeanDefinitionRegistrar 实现类**
+
+
+
 
 
 ## 2.Web自动装配 
