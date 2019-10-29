@@ -1005,6 +1005,326 @@ txManager： 事务提交
 
 # 8.注解驱动设计模式
 
+## 1.@Enable 模块驱动
+
+| 框架         | 模块                           | 激活的模块        |
+| ------------ | ------------------------------ | ----------------- |
+| Spring       | @EnableWebMvc                  | web mvc           |
+| Spring       | @EnableTransactionManagement   | 事务管理          |
+| Spring       | @EnableCaching                 | 缓存              |
+| Spring       | @EnableMBeanExport             | JMX               |
+| Spring       | @EnableAsync                   | 异步处理          |
+| Spring       | @EnableWebFlux                 | web flux          |
+| Spring       | @EnableAspectJAutoProxy        | AspectJ           |
+| Spring boot  | @EnableAutoConfiguration       | 自动转配模块      |
+| Spring boot  | @EnableManagementContext       | Actuate管理模块   |
+| Spring boot  | @EnableConfigurationProperties | 配置属性绑定模块  |
+| Spring boot  | @EnableOAuth2Sso               | Auth2 单点登录    |
+| Spring cloud | @EnableEurekaServer            | eureka 服务器模块 |
+| Spring cloud | @EnableConfigServer            | 配置服务器模块    |
+| Spring cloud | @EnableFeignClients            | feign 客户端模块  |
+| Spring cloud | @EnableZuulProxy               | zuul 模块         |
+| Spring cloud | @EnableCircuitBreaker          | 服务熔断          |
+
+### 1.理解
+
+模块驱动的出现在于 简化装配步骤，实现“按需装配”，屏蔽实现细节。
+
+### 2.自定义
+
+spring 框架大致分成两种 ： 注解驱动  接口编程
+
+**注解驱动**： @Configuration 类+ @Bean 方法  
+
+查看 @EnableWebMvc 
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Import(DelegatingWebMvcConfiguration.class)  // 是个标注@Configuration 的类
+public @interface EnableWebMvc {
+}
+```
+
+仿写
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Import(HelloWorld.class)
+public @interface EnableHelloWorld {
+}
+
+@Configuration
+public class HelloWorld {
+    @Bean
+    public String helloWorld() {
+        return "hello world";
+    }
+}
+
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-10-28 18:10
+ */
+@Configuration
+@EnableHelloWorld
+public class EnableTestBootStrap {
+    public static void main(String[] args) {
+        //注册当前引导类
+        AnnotationConfigApplicationContext bootStrap = new AnnotationConfigApplicationContext(EnableTestBootStrap.class);
+        //获取 名为helloWorld 的bean
+        String helloWorld = bootStrap.getBean("helloWorld", String.class);
+        System.out.println(helloWorld);
+    }
+
+}
+```
+
+结果：
+
+```
+hello world
+```
+
+**接口编程**：ImportSelector 或 ImportBeanDefinitionRegistrar 的实现类 
+
+ImportSelector : 比较简单，导入选择器
+
+ImportBeanDefinitionRegistrar ：除了ImportSelector  的功能，自己还需要注册bean
+
+查看 @EnableCaching
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import(CachingConfigurationSelector.class) //如下的选择器 
+public @interface EnableCaching {
+...
+}
+// AdviceModeImportSelector   implements ImportSelector 
+public class CachingConfigurationSelector extends AdviceModeImportSelector<EnableCaching> {
+    	@Override
+	public String[] selectImports(AdviceMode adviceMode) {
+		switch (adviceMode) {
+			case PROXY:
+				return getProxyImports();
+			case ASPECTJ:
+				return getAspectJImports();
+			default:
+				return null;
+		}
+	}
+    ...
+}
+```
+
+仿写:
+
+```java
+/**
+ * 服务接口 假设 我们两种 服务: http、ftp
+ * {@link HttpServer}
+ * {@link FtpServer}
+ * @author Ryze
+ * @date 2019-10-29 14:24:54
+ * @version V1.0.0
+ */
+public interface Server {
+    enum Type {
+        /**
+         * 两种服务
+         */
+        HTTP, FTP
+    }
+
+    /**
+     * 启动
+     */
+    void start();
+
+    /**
+     * 停止
+     */
+    void stop();
+}
+
+/**
+ * http 实现
+ * @author Ryze
+ * @date 2019-10-29 14:27
+ */
+@Component
+public class HttpServer implements Server {
+    /**
+     * 启动
+     */
+    @Override
+    public void start() {
+        System.out.println("HTTP 实现启动 ");
+    }
+
+    /**
+     * 停止
+     */
+    @Override
+    public void stop() {
+        System.out.println("HTTP 实现停止 ");
+    }
+}
+/**
+ * ftp实现
+ * @author Ryze
+ * @date 2019-10-29 14:28
+ */
+@Component
+public class FtpServer implements Server {
+    /**
+     * 启动
+     */
+    @Override
+    public void start() {
+        System.out.println("FTP 实现启动 ");
+    }
+
+    /**
+     * 停止
+     */
+    @Override
+    public void stop() {
+        System.out.println("FTP 实现启动 ");
+    }
+}
+
+/**
+ * enable 模块
+ * @author Ryze
+ * @date 2019-10-29 14:42:28
+ * @version V1.0.0
+ */
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import(ServerImportSelector.class) //如下的选择器
+public @interface EnableServer {
+    /**
+     * 设置服务器类型
+     */
+    Server.Type type();
+}
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-10-28 18:10
+ */
+@Configuration
+@EnableServer(type = Server.Type.HTTP)
+public class EnableTestBootStrap {
+    public static void main(String[] args) {
+        //注册当前引导类
+        AnnotationConfigApplicationContext bootStrap = new AnnotationConfigApplicationContext(EnableTestBootStrap.class);
+        //获取 Server的bean
+        Server bean = bootStrap.getBean(Server.class);
+        bean.start();
+        bean.stop();
+    }
+}
+
+```
+
+输出结果：
+
+```
+HTTP 实现启动 
+HTTP 实现停止 
+```
+
+ImportBeanDefinitionRegistrar  只需要在 以上的基础上 接着加入代码
+
+```java
+/**
+ * 实现 ImportBeanDefinitionRegistrar
+ * @author Ryze
+ * @date 2019-10-29 14:47
+ */
+public class ServerImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        //创建选择器
+        ServerImportSelector serverImportSelector = new ServerImportSelector();
+        //获取创建bean 合集
+        String[] strings = serverImportSelector.selectImports(importingClassMetadata);
+        //注册
+        Stream.of(strings)
+            //转成BeanDefinitionBuilder
+            .map(BeanDefinitionBuilder::genericBeanDefinition)
+            //转成AbstractBeanDefinition
+            .map(BeanDefinitionBuilder::getBeanDefinition)
+            //注册 beanDefinition 到BeanDefinitionRegistry
+            .forEach(beanDefinition -> BeanDefinitionReaderUtils.registerWithGeneratedName(beanDefinition, registry));
+    }
+}
+
+```
+
+修改 @EnableServer
+
+```java
+/**
+ * enable 模块
+ * @author Ryze
+ * @date 2019-10-29 14:42:28
+ * @version V1.0.0
+ */
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+//@Import(ServerImportSelector.class) //如下的选择器
+@Import(ServerImportBeanDefinitionRegistrar.class) //替换以上的实现类
+public @interface EnableServer {
+    /**
+     * 设置服务器类型
+     */
+    Server.Type type();
+}
+
+```
+
+运行：
+
+```
+HTTP 实现启动 
+HTTP 实现停止 
+```
+
+进阶阅读：@EnableDubboConfig
+
+### 3.原理
+
+
+
+## 2.Web自动装配 
+
+### 1.理解
+
+### 2.自定义
+
+### 3.原理
+
+## 3.Spring条件装配
+
+### 1.理解
+
+### 2.自定义
+
+### 3.原理
+
 # 9.自动装配
 
 # 10.初始化
