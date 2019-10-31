@@ -1643,6 +1643,8 @@ pom.xml
 
 访问 localhost: 8080   看到了  HELLO  WORLD 也就是说 ，我们已经完成了 web（spring mvc） 的自动装配
 
+(web 目录下的项目)
+
 ### 3.原理
 
 
