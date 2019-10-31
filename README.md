@@ -1337,23 +1337,23 @@ HTTP 实现停止
 
 同上面查找方法：
 
-![1572404989989](E:\study\springboot\spring-boot\assets\1572404989989.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572404989989.png?raw=true)
 
-![1572405004318](E:\study\springboot\spring-boot\assets\1572405004318.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572405004318.png?raw=true)
 
-![1572406498621](E:\study\springboot\spring-boot\assets\1572406498621.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572406498621.png?raw=true)
 
-![1572406508789](E:\study\springboot\spring-boot\assets\1572406508789.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572406508789.png?raw=true)
 
 那么@Configuration 的注解 如上面 @ComponentScan 注解扫描 也是会调用
 
-![1572406623867](E:\study\springboot\spring-boot\assets\1572406623867.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572406623867.png?raw=true)
 
 另外 还有AnnotationConfigApplicationContext 注解 驱动上下文实现，也会扫描@Configuration 从实现看到
 
 其构造中的AnnotatedBeanDefinitionReader
 
-![1572419233184](E:\study\springboot\spring-boot\assets\1572419233184.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572419233184.png?raw=true)
 
 也就是说，所有关于Configuration  注解的处理全部都归结到
 
@@ -1373,25 +1373,25 @@ ConfigurationClassPostProcessor 在上下文刷新中 被加载成spring bean，
 
 处理 @Configuration 和@Bean
 
-![1572429956496](E:\study\springboot\spring-boot\assets\1572429956496.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572429956496.png?raw=true)
 
 
 
-![1572429963852](E:\study\springboot\spring-boot\assets\1572429963852.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572429963852.png?raw=true)
 
 
 
-![1572429978915](E:\study\springboot\spring-boot\assets\1572429978915.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572429978915.png?raw=true)
 
-![1572432359978](E:\study\springboot\spring-boot\assets\1572432359978.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432359978.png?raw=true)
 
 递归处理@import
 
-![1572432370562](E:\study\springboot\spring-boot\assets\1572432370562.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432370562.png?raw=true)
 
-![1572432380258](E:\study\springboot\spring-boot\assets\1572432380258.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432380258.png?raw=true)
 
-![1572432393553](E:\study\springboot\spring-boot\assets\1572432393553.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432393553.png?raw=true)
 
 最后用enhanceConfigurationClasses 加强config标注的类
 
