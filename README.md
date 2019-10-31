@@ -1313,10 +1313,10 @@ HTTP 实现停止
 
 **1. @Configuration  的类**
 
-查看 Configuration 注解
+查看注解注释
 
 ```
- *	<p>As an alternative to registering {@code @Configuration} classes directly against an
+ * <p>As an alternative to registering {@code @Configuration} classes directly against an
  * {@code AnnotationConfigApplicationContext}, {@code @Configuration} classes may be
  * declared as normal {@code <bean>} definitions within Spring XML files:
  * <pre class="code">
@@ -1331,9 +1331,71 @@ HTTP 实现停止
  * post processors that facilitate handling {@code @Configuration} classes.
 ```
 
+也就说 @Configuration 等效于之前的 <context:annotation-config /> XML 配置的bean
+
+最终会被 ConfigurationClassPostProcessor 注册
+
+同上面查找方法：
+
+![1572404989989](E:\study\springboot\spring-boot\assets\1572404989989.png)
+
+![1572405004318](E:\study\springboot\spring-boot\assets\1572405004318.png)
+
+![1572406498621](E:\study\springboot\spring-boot\assets\1572406498621.png)
+
+![1572406508789](E:\study\springboot\spring-boot\assets\1572406508789.png)
+
+那么@Configuration 的注解 如上面 @ComponentScan 注解扫描 也是会调用
+
+![1572406623867](E:\study\springboot\spring-boot\assets\1572406623867.png)
+
+另外 还有AnnotationConfigApplicationContext 注解 驱动上下文实现，也会扫描@Configuration 从实现看到
+
+其构造中的AnnotatedBeanDefinitionReader
+
+![1572419233184](E:\study\springboot\spring-boot\assets\1572419233184.png)
+
+也就是说，所有关于Configuration  注解的处理全部都归结到
+
+AnnotationConfigUtils.registerAnnotationConfigProcessors
+
+最终 包装成 ConfigurationClassPostProcessor ，查看注释：
+
+```
+ * This post processor is {@link Ordered#HIGHEST_PRECEDENCE} as it is important
+ * that any {@link Bean} methods declared in Configuration classes have their
+ * respective bean definitions registered before any other BeanFactoryPostProcessor
+ * executes.
+ 最高级别的post processor 去处理  Configuration classes 也处理其他的bean
+```
+
+ConfigurationClassPostProcessor 在上下文刷新中 被加载成spring bean，其 postProcessBeanFactory 被调用
+
+处理 @Configuration 和@Bean
+
+![1572429956496](E:\study\springboot\spring-boot\assets\1572429956496.png)
 
 
-**2.ImportSelector 和ImportBeanDefinitionRegistrar 实现类**
+
+![1572429963852](E:\study\springboot\spring-boot\assets\1572429963852.png)
+
+
+
+![1572429978915](E:\study\springboot\spring-boot\assets\1572429978915.png)
+
+![1572432359978](E:\study\springboot\spring-boot\assets\1572432359978.png)
+
+递归处理@import
+
+![1572432370562](E:\study\springboot\spring-boot\assets\1572432370562.png)
+
+![1572432380258](E:\study\springboot\spring-boot\assets\1572432380258.png)
+
+![1572432393553](E:\study\springboot\spring-boot\assets\1572432393553.png)
+
+最后用enhanceConfigurationClasses 加强config标注的类
+
+2.ImportSelector 和ImportBeanDefinitionRegistrar 实现类
 
 
 
