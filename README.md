@@ -1647,7 +1647,80 @@ pom.xml
 
 ### 3.原理
 
+实际上 spring 框架并不具备 web自动装配的 原生能力，而是由于 Servlet 3.0技术中的  ServletContext 配置方法 和 运
 
+行时插拔的两大特性
+
+#### 1.ServletContext 配置方法
+
+传统的web 项目，需要配置 web.xml 文件,配置 filter、servlet、listener 一旦配置好就不支持 修改和占位符 ，自 Servlet3.0之后，出现了ServletContext 为了弥补这些细节
+
+具体的 api 需要查看 ServletContext 接口看到
+
+addListener
+
+addServlet
+
+addFilter  
+
+等 一些方法。ServletContext  为运行时提供了装配能力，但是时机还需要自己把握
+
+#### 2.运行时插拔
+
+规范中提及  
+
+以上 ServletContext 新增的方法要么是在 ServletContextListener 的 contexInitialized 方法中调用，要么是在 ServletContainerInitializer 的 onStartup() 方法中调用。
+
+**ServletContextListener**  负责监听 ServletContext 的生命周期事件 包括初始化和销毁，contexInitialized  方法就是对初始化的监听。
+
+**ServletContainerInitializer** 也是 Servlet 3.0 新增的一个接口，容器在启动时使用 JAR 服务 API(JAR Service API) 来发现 ServletContainerInitializer 的实现类，并且容器将 WEB-INF/lib 目录下 JAR 包中的类都交给该类的 onStartup() 方法处理，我们通常需要在该实现类上使用 @HandlesTypes 注解来指定希望被处理的类，过滤掉不希望给 onStartup() 处理的类。
+
+也就是说，ServletContainerInitializer  早于 ServletContextListener  
+
+大致的流程：一个servlet 需要被装配，被提供服务，那么首先是  ServletContext # addServlet，为其装配，
+
+随后到  ServletContainerInitializer # onStartup 实现，多个的话就是一样的过程。
+
+ServletContainerInitializer  的实现类 SpringServletContainerInitializer
+
+```java
+@HandlesTypes(WebApplicationInitializer.class)
+public class SpringServletContainerInitializer implements ServletContainerInitializer {
+
+	@Override
+	public void onStartup(@Nullable Set<Class<?>> webAppInitializerClasses, ServletContext servletContext)throws ServletException {
+		...
+	}
+
+}
+
+```
+
+是对 WebApplicationInitializer的 实现类的处理 ，看到
+
+-AbstractContextLoaderInitializer  (构建Web Root 应用上下文  WebApplicationContext， 替代web.xml 注册 
+
+​															ContextLoaderListener)
+
+​	-AbstractDispatcherServletInitializer （替代 web.xml 注册 DispatcherServlet，必要的话创建构建Web Root 应用上																	下文  WebApplicationContext）
+
+​		-AbstractAnnotationConfigDispatcherServletInitializer（具备注解驱动的 AbstractDispatcherServletInitializer ）
+
+下面 一 一介绍
+
+#### 3.AbstractContextLoaderInitializer  
+
+在Spring Mvc 中  每个DispatcherServlet 都有 自己的 Servlet WebApplicationContext，继承自Root 
+
+WebApplicationContext( 各种 Bean)
+
+![image](https://docs.spring.io/spring/docs/5.2.0.RELEASE/spring-framework-reference/images/mvc-context-hierarchy.png)
+
+#### 4.AbstractDispatcherServletInitializer 
+
+
+
+#### 5.AbstractAnnotationConfigDispatcherServletInitializer
 
 ## 3.Spring条件装配
 
