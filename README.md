@@ -1413,7 +1413,78 @@ candidate.isAssignable(ImportBeanDefinitionRegistrar.class) 是否是 ImportBean
 
 ### 1.理解
 
+查看spring web的官方文档
+
+ 初始化个 WebApplicationInitializer ，用于编程式取代web.xml,
+
+```java
+import org.springframework.web.WebApplicationInitializer;
+
+public class MyWebApplicationInitializer implements WebApplicationInitializer {
+
+    @Override
+    public void onStartup(ServletContext container) {
+        XmlWebApplicationContext appContext = new XmlWebApplicationContext();
+        appContext.setConfigLocation("/WEB-INF/spring/dispatcher-config.xml");
+
+        ServletRegistration.Dynamic registration = container.addServlet("dispatcher", new DispatcherServlet(appContext));
+        registration.setLoadOnStartup(1);
+        registration.addMapping("/");
+    }
+}
+```
+
+但是 WebApplicationInitializer是 spring mvc的接口，如果不用这个的话，可以实现
+
+AbstractDispatcherServletInitializer (基于编程式)     **或者**
+
+AbstractDispatcherServletInitializer  (基于XML)
+
+```java
+public class MyWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        return null;
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class<?>[] { MyWebConfig.class };
+    }
+
+    @Override
+    protected String[] getServletMappings() {
+        return new String[] { "/" };
+    }
+}
+
+public class MyWebAppInitializer extends AbstractDispatcherServletInitializer {
+
+    @Override
+    protected WebApplicationContext createRootApplicationContext() {
+        return null;
+    }
+
+    @Override
+    protected WebApplicationContext createServletApplicationContext() {
+        XmlWebApplicationContext cxt = new XmlWebApplicationContext();
+        cxt.setConfigLocation("/WEB-INF/spring/dispatcher-config.xml");
+        return cxt;
+    }
+
+    @Override
+    protected String[] getServletMappings() {
+        return new String[] { "/" };
+    }
+}
+```
+
+
+
 ### 2.自定义
+
+
 
 ### 3.原理
 
@@ -1421,7 +1492,11 @@ candidate.isAssignable(ImportBeanDefinitionRegistrar.class) 是否是 ImportBean
 
 ### 1.理解
 
+
+
 ### 2.自定义
+
+
 
 ### 3.原理
 
