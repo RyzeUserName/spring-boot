@@ -1393,13 +1393,21 @@ ConfigurationClassPostProcessor 在上下文刷新中 被加载成spring bean，
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432393553.png?raw=true)
 
-最后用enhanceConfigurationClasses 加强config标注的类
+最后用enhanceConfigurationClasses 加强config标注的类，回到第一张图
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572429956496.png?raw=true)
 
 2.ImportSelector 和ImportBeanDefinitionRegistrar 实现类
 
+以上的图片中就已包含了 
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572432380258.png?raw=true)
 
+candidate.isAssignable(ImportSelector.class) 是否是 ImportSelector 导入 （selector.selectImports）
 
+candidate.isAssignable(ImportBeanDefinitionRegistrar.class) 是否是 ImportBeanDefinitionRegistrar 导入
+
+（configClass.addImportBeanDefinitionRegistrar）
 
 ## 2.Web自动装配 
 
