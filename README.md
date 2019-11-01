@@ -1710,17 +1710,78 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 
 #### 3.AbstractContextLoaderInitializer  
 
+在其源码中看到
+
+注册 ContextLoaderListener 到 ServletContext 如下：
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572592884760.png?raw=true)
+
+也就是说 先创建 root 上下文 ，注册监听，然后监听ServletContext 的初始化和销毁
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572593301298.png?raw=true)
+
+当环境在servlet3.0以上，实现 AbstractContextLoaderInitializer 只需要实现  createRootApplicationContext 方法即可
+
+但在Spring Mvc 使用场景下，直接实现 AbstractContextLoaderInitializer 的方式不推荐，所以没文档示例说明。
+
+另外 ContextLoaderListener  不允许重复注册到  ServletContext  （原因下面说）先了解下：
+
 在Spring Mvc 中  每个DispatcherServlet 都有 自己的 Servlet WebApplicationContext，继承自Root 
 
 WebApplicationContext( 各种 Bean)
 
 ![image](https://docs.spring.io/spring/docs/5.2.0.RELEASE/spring-framework-reference/images/mvc-context-hierarchy.png)
 
+
+
+也就是说 只有 一个 root 上下文，而创建上下文并 注册监听是在 onStartup 一个方法里，所以这就保证了 一个root上下文只有一个监听，在 ContextLoaderListener 的 contextInitialized 初始化 监听时, 调用父类ContextLoader 的contextInitialized ，代码如下：
+
+```java
+if (servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null) {throw new IllegalStateException(
+					"Cannot initialize context because there is already a root application context present - " +
+					"check whether you have multiple ContextLoader* definitions in your web.xml!");
+		}
+```
+
+即 检查 root 上下文是否已经存在，存在的话  就报错。
+
+也就是说   AbstractContextLoaderInitializer  的功能： 初始化 root 上下文（WebApplicationContext），注册监听
+
+但是 createRootApplicationContext 没有实现，
+
+ 并未完成 前端派发（Dispatcher） 等核心 功能，当然我觉得 spring 就是想把这些个小功能都切开，等着别人多实现
+
 #### 4.AbstractDispatcherServletInitializer 
 
+弥补了父类没有  Dispatcher的遗憾，如下
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572597468296.png?raw=true)
+
+customizeRegistration 可执行进一步定制注册
+
+实现其成本 也不低，需要实现 父类的方法和 createServletApplicationContext 方法，也就引出了下面这个
 
 #### 5.AbstractAnnotationConfigDispatcherServletInitializer
+
+web自定义装配 章节 时实现的类。
+
+实现了 上面的
+
+AbstractContextLoaderInitializer 的 createRootApplicationContext
+
+AbstractDispatcherServletInitializer  的  createServletApplicationContext
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572602598746.png?raw=true)
+
+AnnotationConfigWebApplicationContext 需要注册 这些信息（配置类），从而驱动其他Bean的初始化，但是这两个类是可选的，子类必须覆盖，从而让开发人员感知存在，至于是否装配取决于应用的需要。上面的例子就是覆盖，但是并未实现 getServletMappings 方法源自 AbstractDispatcherServletInitializer，指定映射根路径
+
+**总结：**
+
+SpringServletContainerInitializer 通过实现 Servlet 3.0的 ServletContainerInitializer 与
+
+@HandlesTypes() 顺序执行 WebApplicationInitializer 的实现集合，进而利用  Servlet 3.0 的api 实现web 的自动装配，
+
+并结合 AnnotationConfigWebApplicationContext 的简化配置 ，实现简化的自动化装配。
 
 ## 3.Spring条件装配
 
