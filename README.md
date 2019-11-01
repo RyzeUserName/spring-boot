@@ -16,7 +16,7 @@
 
 打成jar包，解压  META-INF目录下 MANIFEST.MF 
 
-![ image ](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png)
 
 org.springframework.boot.loader.JarLauncher   jar 文件的
 
