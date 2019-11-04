@@ -1785,15 +1785,147 @@ SpringServletContainerInitializer 通过实现 Servlet 3.0的 ServletContainerIn
 
 ## 3.Spring条件装配
 
+通常会为不同部署环境 提供条件装配，大致的手段分为两种：
+
+1. 编译时差异化（依赖外部的构建工具 Maven 等）
+
+2. 利用不同环境的配置控制统一归档文件 （系统变量等）
+
+spring 选择了后者，自3.1开始逐步引入 @Profile @Conditional
+
 ### 1.理解
 
+ 	即 application-dev.xml  application-test.xml  根据环境变量 加载不同的配置文件。
 
+​	spring 允许设置两种类型，有效的、默认的（无有效的 选择默认的）
+
+​	spring 应用有两种profile 配置的选择： ConfigurableEnvironment 、java 系统属性配置
+
+| 设置类型            | ConfigurableEnvironment API | java系统属性            |
+| ------------------- | --------------------------- | ----------------------- |
+| 设置Active profile  | setActiveProfiles           | spring.profiles.active  |
+| 添加Active profile  | addActiveProfile            |                         |
+| 设置Default profile | setDefaultProfiles          | spring.profiles.default |
 
 ### 2.自定义
 
+定义 一个接口不同环境，不同实现
 
+```java
+/**
+ * 计算接口
+ * @author Ryze
+ * @date 2019-11-04 15:53
+ */
+public interface Calculate {
+    /**
+     * 累加 计算
+     * @param integer 计算的参数
+     * @return Integer sum
+     * @author Ryze
+     * @date 2019-11-04 15:54:27
+     */
+    Integer sum(Integer... integer);
+}
+/**
+ * java7实现
+ * @author Ryze
+ * @date 2019-11-04 15:55
+ */
+@Service
+@Profile("java7")
+public class Java7CalculateImpl implements Calculate {
+    /**
+     * 累加 计算
+     * @param integer 计算的参数
+     * @return Integer sum
+     * @author Ryze
+     * @date 2019-11-04 15:54:27
+     */
+    @Override
+    public Integer sum(Integer... integer) {
+        Integer reduce = 0;
+        for (Integer one : integer) {
+            reduce += one;
+        }
+        System.out.printf("java7计算 %s 结果: %d\n", Arrays.asList(integer), reduce);
+        return reduce;
+    }
+}
+/**
+ * java 8实现
+ * @author Ryze
+ * @date 2019-11-04 15:55
+ */
+@Service
+@Profile("java8")
+public class Java8CalculateImpl implements Calculate {
+    /**
+     * 累加 计算
+     * @param integer 计算的参数
+     * @return Integer sum
+     * @author Ryze
+     * @date 2019-11-04 15:54:27
+     */
+    @Override
+    public Integer sum(Integer... integer) {
+        Integer reduce = Stream.of(integer).reduce(0, Integer::sum);
+        System.out.printf("java8计算 %s 结果: %d\n", Arrays.asList(integer), reduce);
+        return reduce;
+    }
+}
+
+```
+
+定义启动类 并检测
+
+```java
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-11-04 16:01
+ */
+@ComponentScan(basePackageClasses = Calculate.class)
+@Configuration
+public class CalculateBootStrap {
+    static {
+        //设置系统变量
+        System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "java8");
+
+    }
+
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(CalculateBootStrap.class);
+//        设置环境变量 类似静态代码块 设置
+//        ConfigurableEnvironment environment = context.getEnvironment();
+//        environment.setActiveProfiles("java7");
+        context.refresh();
+        Calculate bean = context.getBean(Calculate.class);
+        bean.sum(1, 2, 3, 4);
+        context.close();
+    }
+}
+
+```
+
+结果：
+
+```
+java8计算 [1, 2, 3, 4] 结果: 10
+```
 
 ### 3.原理
+
+1.@Profile 条件装配原理
+
+2.< bean profile="..."  > 原理
+
+3.@Conditional 条件装配
+
+4.自定义@Conditional  条件装配
+
+5..@Conditional 条件装配原理
 
 # 9.自动装配
 
