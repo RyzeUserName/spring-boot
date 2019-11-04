@@ -1919,6 +1919,39 @@ java8计算 [1, 2, 3, 4] 结果: 10
 
 1.@Profile 条件装配原理
 
+根据前文的积累，我们得知注册bean 的途径大致如下：
+
+| 注册驱动Bean的方式                 | 使用场景          | Bean 注解元信息处理类                       |
+| ---------------------------------- | ----------------- | ------------------------------------------- |
+| @ComponentScan                     | 对spring 注解扫描 | ClassPathScanningCandidateComponentProvider |
+| @Component 或@Configuration        | @Import 导入      | ConfigurationClassPostProcessor             |
+| @Bean                              | @Bean 定义        | ConfigurationClassParser                    |
+| AnnotationConfigApplicationContext | 注册bean class    | AnnotatedBeanDefinitionReader               |
+
+自 spring 3.0 开始  以上3中注册 bean 的方法均增加了 @Profile  的处理
+
+**ClassPathScanningCandidateComponentProvider #  scanCandidateComponents**
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866334278.png)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866342970.png)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866349784.png)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866358937.png)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866365498.png)
+
+**ConfigurationClassParser #  processConfigurationClass**
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866522544.png)
+
+之后就是同上 的代码
+
+AnnotatedBeanDefinitionReader #  registerBean （实际调用doRegisterBean)  之后就是同上 的代码
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866615599.png)
+
 2.< bean profile="..."  > 原理
 
 3.@Conditional 条件装配
