@@ -1932,27 +1932,31 @@ java8计算 [1, 2, 3, 4] 结果: 10
 
 **ClassPathScanningCandidateComponentProvider #  scanCandidateComponents**
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866334278.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866334278.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866342970.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866342970.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866349784.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866349784.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866358937.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866358937.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866365498.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866365498.png?raw=true)
 
 **ConfigurationClassParser #  processConfigurationClass**
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866522544.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866522544.png?raw=true)
 
 之后就是同上 的代码
 
 AnnotatedBeanDefinitionReader #  registerBean （实际调用doRegisterBean)  之后就是同上 的代码
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866615599.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572866615599.png?raw=true)
 
 2.< bean profile="..."  > 原理
+
+较为简单  DefaultBeanDefinitionDocumentReader 
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572867165147.png)
 
 3.@Conditional 条件装配
 
