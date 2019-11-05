@@ -1960,7 +1960,109 @@ AnnotatedBeanDefinitionReader #  registerBean （实际调用doRegisterBean)  �
 
 3.@Conditional 条件装配
 
+spring 4.0以后引入的新特性，前面的@Profile 趋向于“静态激活和配置”，@Conditional  更关注运行时的动态选择
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572919215037.png)
+
+仿照 ConditionalOnBean 自定义
+
 4.自定义@Conditional  条件装配
+
+```java
+/**
+ * 跟据 java 系统属性设置的语言，来加载不同的message
+ * @author Ryze
+ * @date 2019-11-05 10:10:12
+ * @version V1.0.0
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(OnConditionalOnSystemProperty.class)
+public @interface ConditionalOnSystemProperty {
+    /**
+     * 名字
+     */
+    String name();
+
+    /**
+     * 值
+     */
+    String value();
+}
+/**
+ * 实现 比对
+ * @author Ryze
+ * @date 2019-11-05 10:11
+ */
+public class OnConditionalOnSystemProperty implements Condition {
+    /**
+     * 是否匹配
+     */
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        //全部注解的值
+        MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(ConditionalOnSystemProperty.class.getName());
+        //单值获取
+        String name = (String) attributes.getFirst("name");
+        String value = (String) attributes.getFirst("value");
+        //获取java 属性的值
+        String property = System.getProperty(name);
+        //比较是否相等 匹配
+        if (Objects.equals(value, property)) {
+            return true;
+        }
+        return false;
+    }
+}
+/**
+ * 消息配置
+ * @author Ryze
+ * @date 2019-11-05 10:22
+ */
+@Configuration
+public class ConditionMessageConfiguration {
+
+    @ConditionalOnSystemProperty(name = "language", value = "Chinese")
+    @Bean("message")
+    public String chineseLanguage() {
+        return "你好，世界";
+    }
+
+    @ConditionalOnSystemProperty(name = "language", value = "English")
+    @Bean("message")
+    public String englishLanguage() {
+        return "hello world";
+    }
+}
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-11-04 16:01
+ */
+@ComponentScan(basePackageClasses = ConditionMessageConfiguration.class)
+@Configuration
+public class ConditionBootStrap {
+
+    public static void main(String[] args) {
+        //设置系统变量
+        System.setProperty("language", "English");
+        //上下文
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        //注册 bean
+        context.register(ConditionMessageConfiguration.class);
+        //启动上下文
+        context.refresh();
+        //获取 message 的bean
+        String message = context.getBean("message", String.class);
+        System.out.println(message);
+        //关闭上下文
+        context.close();
+    }
+}
+```
+
+结果： hello world
 
 5..@Conditional 条件装配原理
 
