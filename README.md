@@ -2064,7 +2064,17 @@ public class ConditionBootStrap {
 
 结果： hello world
 
+3.1~3.2 利用的是Environment # acceptsProfiles(String ..)
+
+自 4.0 之后 Profile 的实现采用的是 Conditional  
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572921920933.png)
+
+总之 条件装配均采用@Conditional 实现，具体原理下面分析
+
 5..@Conditional 条件装配原理
+
+
 
 # 9.自动装配
 
