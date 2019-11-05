@@ -2074,9 +2074,27 @@ public class ConditionBootStrap {
 
 5..@Conditional 条件装配原理
 
+就前面的代码 我们已经看到了
 
+ConditionEvaluator #  shouldSkip（ProfileCondition # matches） 条件装配
 
 # 9.自动装配
+
+## 1.理解Spring boot自动装配
+
+
+
+## 2.Spring boot自动装配原理
+
+
+
+## 3.自定义Spring boot自动装配
+
+
+
+## 4.Spring boot条件化自动装配
+
+
 
 # 10.初始化
 
