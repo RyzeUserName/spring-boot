@@ -2068,7 +2068,7 @@ public class ConditionBootStrap {
 
 自 4.0 之后 Profile 的实现采用的是 Conditional  
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572921920933.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572921920933.png?raw=true)
 
 总之 条件装配均采用@Conditional 实现，具体原理下面分析
 
@@ -2080,11 +2080,49 @@ ConditionEvaluator #  shouldSkip（ProfileCondition # matches） 条件装配
 
 # 9.自动装配
 
+spring 不建议修改默认的扫描包范围，因为它将读取所有jar中的类，并且有可能造成某些应用错误。
+
 ## 1.理解Spring boot自动装配
 
+从启动类的注解开始 @SpringBootApplication 表示  
 
+@SpringBootConfiguration->@Configuration 
+
+@EnableAutoConfiguration->自动装配模块
+
+@ComponentScan->扫描
+
+启动类并不依赖于  @SpringBootConfiguration  或者  @Configuration  
+
+标注成 EnableAutoConfiguration 一样能启动
+
+@SpringBootConfiguration  并不是必须的，但是有了它 可以省很多写的注解
+
+**自动装配 默认的项，那么怎么不加载不需要的自动装配项呢？**
+
+1.代码配置：
+
+​	@EnableAutoConfiguration.exclude()
+
+​	@EnableAutoConfiguration.excludeName()
+
+2.配置文件配置：
+
+​	spring.autoconfigure.exclude= xxx
+
+实现这个功能，类似于黑名单的方式，要么阻断  @Configuration  的注册，要么使其 @Conditional 不成立
+
+前者实现成本较高，后者对@Configuration class 存在侵入性。
+
+那么怎么实现的呢？下一节
 
 ## 2.Spring boot自动装配原理
+
+@EnableAutoConfiguration 开始 注解上标注 
+
+@Import(AutoConfigurationImportSelector.class)  导入 AutoConfigurationImportSelector类，寻找其实现的查找方法
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573011537817.png?raw=true)
 
 
 
