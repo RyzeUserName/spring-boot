@@ -16,7 +16,7 @@
 
 打成jar包，解压  META-INF目录下 MANIFEST.MF 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567653220045.png?raw=true)
 
 org.springframework.boot.loader.JarLauncher   jar 文件的
 
@@ -35,31 +35,31 @@ org.springframework.boot.loader.WarLauncher   war文件的启动器
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654046850.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654046850.png?raw=true)
 
 支持jar启动和文件系统两种启动方式
 
 结构如下：
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654475580.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567654475580.png?raw=true)
 
 main方法点进去
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669076427.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669076427.png?raw=true)
 
 **第一句**
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669133123.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669133123.png?raw=true)
 
 设置值：k   v（追加 springboot.loader） 清空URLStreamHandler
 
 发现：
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669344118.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669344118.png?raw=true)
 
 也就是说：URLStreamHandler 对应着不同的 protocol 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669494641.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567669494641.png?raw=true)
 
 ​	去查看 org.springframework.boot.loader.jar.Handler  注释写着 for Spring Boot loader {@link JarFile}s.
 
@@ -75,17 +75,17 @@ main方法点进去
 
 ​	扩展：下面代码是如何获取URLStreamHandler 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567670589618.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567670589618.png?raw=true)
 
 ​	
 
 **第二句**： getClassPathArchives()  Archive资源  进而获取类加载器
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672332232.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672332232.png?raw=true)
 
 **第三句**：
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672972248.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567672972248.png?raw=true)
 
 JarLauncher 实际上是同进程调用Start-Class的main方法
 
@@ -108,7 +108,7 @@ WarLauncher  跟JarLauncher 区别不大 文件结构不同
 
 如图：
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567673740857.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1567673740857.png?raw=true)
 
 打包成WAR文件是一种兼容措施，既能WarLauncher   也能Servlet容器，建议使用费WEB部署，尽可能使用JAR归档方式
 
@@ -263,7 +263,7 @@ springboot的默认是嵌入式tomcat
 
 点开查看到   
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568195369100.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568195369100.png?raw=true)
 
 @AliasFor 桥接其他注解的关键，也就是起了个别名而已。
 
@@ -279,11 +279,11 @@ FilterType.CUSTOM  使用自定义的过滤器处理
 
 TypeExcludeFilter -> 把过滤器都 弄出来作为代理执行对象 过滤
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197614539.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197614539.png?raw=true)
 
 AutoConfigurationExcludeFilter
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197776836.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568197776836.png?raw=true)
 
 ## 2.@SpringBootConfiguration
 
@@ -317,25 +317,25 @@ Configuration 中为Cglib 加强
 
 ​		打开包 找到jdbc包 第一看到DataSourceAutoConfiguration   顾名思义 数据源的自动装配
 
-​		![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772241327.png)	
+​		![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772241327.png?raw=true)	
 
 ​	导入的类 ：
 
-​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772287670.png)
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772287670.png?raw=true)
 
 ​	枚举：
 
-​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772589838.png)
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568772589838.png?raw=true)
 
 ​	那么 DataSourceAutoConfiguration    怎么装配的呢？
 
-​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568773976826.png)
+​	![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568773976826.png?raw=true)
 
   很容易找到 web 自动装配
 
 EmbeddedWebServerFactoryCustomizerAutoConfiguration
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568775996622.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1568775996622.png?raw=true)
 
 # 6.Production-Ready
 
@@ -428,43 +428,43 @@ Spring Boot includes a number of additional features to help you monitor and man
 
 ​		2. component-scan 找到 是在 spring-context  spring.handlers  中
 
-​		![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554645199.png)
+​		![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554645199.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554659141.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554659141.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554667278.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554667278.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554685040.png)
-
-
-
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554694457.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554685040.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554701360.png)
-
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554708632.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554694457.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554721030.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554701360.png?raw=true)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554708632.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554729468.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554721030.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554736593.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554729468.png?raw=true)
 
 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554743863.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554736593.png?raw=true)
+
+
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571554743863.png?raw=true)
 
 **注意**：
 
@@ -513,19 +513,19 @@ public class BootHelloApplication {
 
 还是上面的代码
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648917786.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648917786.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648932784.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648932784.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648942553.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571648942553.png?raw=true)
 
 关于 注解处理
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649768630.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649768630.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649777203.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649777203.png?raw=true)
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649786081.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1571649786081.png?raw=true)
 
 RuntimeVisibleTypeAnnotations 父类的注解  （@Inherited ）
 
@@ -1956,13 +1956,13 @@ AnnotatedBeanDefinitionReader #  registerBean （实际调用doRegisterBean)  �
 
 较为简单  DefaultBeanDefinitionDocumentReader 
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572867165147.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572867165147.png?raw=true)
 
 3.@Conditional 条件装配
 
 spring 4.0以后引入的新特性，前面的@Profile 趋向于“静态激活和配置”，@Conditional  更关注运行时的动态选择
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572919215037.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1572919215037.png?raw=true)
 
 仿照 ConditionalOnBean 自定义
 
