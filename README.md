@@ -2192,7 +2192,27 @@ AutoConfigurationMetadataLoader #loadMetadata 返回 PropertiesAutoConfiguration
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573805287541.png?raw=true)
 
+整理下总过程：
 
+1.获取 自动装在的 k
+
+2.获取   自动装在的 k/v
+
+3.获取注解排除的 类名 也就是k中的
+
+4.k 中移除 排除的
+
+5.k/v过滤 k 做匹配，也就是看k对应的v 也就是实现类是够存在
+
+6.触发事件
+
+**触发事件详情**：
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573822119260.png?raw=true)
+
+也就是 
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573822131633.png?raw=true)
 
 ## 3.自定义Spring boot自动装配
 
