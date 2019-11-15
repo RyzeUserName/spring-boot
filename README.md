@@ -2132,7 +2132,15 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573644295379.png?raw=true)
 
+读取EnableAutoConfiguration 实现类
+
+也就是
+
+![1573811288152](E:\study\springboot\spring-boot\assets\1573811288152.png)
+
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573644303329.png?raw=true)
+
+
 
 **getExclusions 详情**
 
