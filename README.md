@@ -2148,6 +2148,32 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 检查是否合法,当排除的类存在，且不在自动装配的类集合里，那么就报错
 
+**filter详情：**
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573796691851.png?raw=true)
+
+也就是读取的 AutoConfigurationImportFilter 的实现类，也就是配置文件中的
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797049563.png?raw=true)
+
+也就是  
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797139775.png?raw=true)
+
+加载资源之后，转换、排序
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573791532639.png?raw=true)
+
+**过滤的参数autoConfigurationMetadata 怎么来的？**
+
+AutoConfigurationMetadataLoader #loadMetadata
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797657967.png?raw=true)
+
+这个路径上资源加载
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573805287541.png?raw=true)
+
 
 
 ## 3.自定义Spring boot自动装配
