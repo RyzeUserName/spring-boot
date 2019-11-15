@@ -2124,7 +2124,15 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573011537817.png?raw=true)
 
+为什么会重复？
 
+因为自动配置可能存在组件类名重复定义的情况，那么利用set去重
+
+getCandidateConfigurations 详情
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573644295379.png?raw=true)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573644303329.png?raw=true)
 
 ## 3.自定义Spring boot自动装配
 
