@@ -2136,7 +2136,7 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 也就是
 
-![1573811288152](E:\study\springboot\spring-boot\assets\1573811288152.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573811288152.png?raw=true)
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573644303329.png?raw=true)
 
@@ -2160,6 +2160,8 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573796691851.png?raw=true)
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573791532639.png?raw=true)
+
 也就是读取的 AutoConfigurationImportFilter 的实现类，也就是配置文件中的
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797049563.png?raw=true)
@@ -2168,13 +2170,21 @@ spring 不建议修改默认的扫描包范围，因为它将读取所有jar中�
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797139775.png?raw=true)
 
-加载资源之后，转换、排序
+主要是match会被调用
 
-![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573791532639.png?raw=true)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573817891512.png?raw=true)
+
+二分之后
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573817918373.png?raw=true)
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573817932256.png?raw=true)
+
+
 
 **过滤的参数autoConfigurationMetadata 怎么来的？**
 
-AutoConfigurationMetadataLoader #loadMetadata
+AutoConfigurationMetadataLoader #loadMetadata 返回 PropertiesAutoConfigurationMetadata
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573797657967.png?raw=true)
 
