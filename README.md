@@ -2444,9 +2444,131 @@ spring-boot-starter-${ module}   （官方）
 
 **4.自定义**
 
-定义一个formatter的 starter
+定义一个formatter的 starter（格式化的）
 
+新建项目 springboot 项目   formatter-spring-boot-starter
 
+新建包名：autoconfigure.formatter
+
+新建格式化的接口以及默认实现
+
+```java
+/**
+ * 格式化
+ * @author Ryze
+ * @date 2019-11-20 16:46:01
+ * @version V1.0.0
+ */
+public interface Formatter {
+
+    String formatter(Object object);
+}
+/**
+ * 默认实现
+ * @author Ryze
+ * @date 2019-11-20 16:46
+ */
+public class DefaultFormatter implements Formatter {
+    @Override
+    public String formatter(Object object) {
+        return String.valueOf(object);
+    }
+}
+```
+
+然后写 自动装配类
+
+```java
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ */
+@Configuration
+public class FormatterAutoConfiguration {
+    @Bean
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+}
+
+```
+
+在目录resource 下新建文件夹META-INF  新建文件 spring.factories
+
+然后配置上 这个装配类 
+
+```xml
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\  com.example.formatterspringbootstarter.autoconfigure.formatter.FormatterAutoConfiguration
+```
+
+pom.xml 详情：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>formatter-spring-boot-starter</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>formatter-spring-boot-starter</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+切换到 项目目录下 执行  mvn -Dmaven.test.skip  -U clean install 
+
+然后在测试项目中 引入依赖
+
+编写启动测试类
+
+```java
+/**
+ * 引导启动类
+ * @author Ryze
+ * @date 2019-11-20 16:59
+ */
+@EnableAutoConfiguration
+public class FormatterBootStrap {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext run = new SpringApplicationBuilder(FormatterBootStrap.class)
+            .web(WebApplicationType.NONE)
+            .run(args);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("测试", "格式化");
+        Formatter bean = run.getBean(Formatter.class);
+        String formatter = bean.formatter(map);
+        System.out.println(formatter);
+        run.close();
+    }
+}
+```
+
+执行结果：
+
+{测试=格式化}
+
+至此 完成了最简单的 自定义 starter模块
 
 ## 4.Spring boot条件化自动装配
 

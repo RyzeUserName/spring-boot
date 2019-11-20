@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.AutoConfigurationImportListener=com.example.boothello.listener.MyListener
+#org.springframework.boot.autoconfigure.AutoConfigurationImportListener=com.example.boothello.listener.MyListener #测试监听用的 不用就注释掉
