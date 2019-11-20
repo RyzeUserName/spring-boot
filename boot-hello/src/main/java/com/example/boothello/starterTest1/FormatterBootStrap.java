@@ -25,7 +25,8 @@ public class FormatterBootStrap {
         map.put("测试", "格式化");
         Formatter bean = run.getBean(Formatter.class);
         String formatter = bean.formatter(map);
-        System.out.println(formatter);
+        System.out.printf("实现类 %s,格式化结果%s", bean.getClass().getSimpleName(), formatter);
+        System.out.println();
         run.close();
     }
 }

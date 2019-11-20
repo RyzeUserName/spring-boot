@@ -2578,7 +2578,125 @@ public class FormatterBootStrap {
 
 均使用@Conditional 实现，具体实现：
 
-![1574245909729](E:\study\springboot\spring-boot\assets\1574245909729.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574245909729.png?raw=true)
+
+那么利用这些修改starter，String的格式化满足不了 对象的格式化，那么引入jackson
+
+增加 依赖
+
+```xml
+        <!-- Jackson 依赖 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <optional>true</optional>
+        </dependency>
+```
+
+增加json 格式化
+
+```java
+/**
+ * json 格式化
+ * @author Ryze
+ * @date 2019-11-20 18:43
+ */
+public class JsonFormatter implements Formatter {
+    private final ObjectMapper objectMapper;
+
+    public JsonFormatter() {
+        this.objectMapper = new ObjectMapper();
+    }
+
+    @Override
+    public String formatter(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+}
+
+```
+
+修改装配类
+
+```java
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ */
+@Configuration
+public class FormatterAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter jsonFormatter() {
+        return new JsonFormatter();
+    }
+}
+
+```
+
+重新执行 mvn clean install
+
+修改测试项目的启动类
+
+```java
+
+/**
+ * 引导启动类
+ * @author Ryze
+ * @date 2019-11-20 16:59
+ */
+@EnableAutoConfiguration
+public class FormatterBootStrap {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext run = new SpringApplicationBuilder(FormatterBootStrap.class)
+            .web(WebApplicationType.NONE)
+            .run(args);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("测试", "格式化");
+        Formatter bean = run.getBean(Formatter.class);
+        String formatter = bean.formatter(map);
+        System.out.printf("实现类 %s,格式化结果%s", bean.getClass().getSimpleName(), formatter);
+        System.out.println();
+        run.close();
+    }
+}
+
+```
+
+执行：
+
+实现类 DefaultFormatter,格式化结果{测试=格式化}
+
+在测试项目中引入依赖
+
+```xml
+    <!-- Jackson 依赖 -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+```
+重新执行：
+
+实现类 JsonFormatter,格式化结果{"测试":"格式化"}
+
+实现了格式化组件，切换的自动装配
+
+实际上 jackson 也是这么装配来的
+
+![1574248110523](E:\study\springboot\spring-boot\assets\1574248110523.png)
 
 # 10.初始化
 

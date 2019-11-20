@@ -24,5 +24,11 @@
             <artifactId>spring-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- Jackson 依赖 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>
