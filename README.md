@@ -2402,9 +2402,41 @@ AutoConfigurationSorter类排序 处理的  @AutoConfigureAfter @AutoConfigureBe
 
 **@EnableAutoConfiguration 自动装配的Basepackages**
 
+@EnableAutoConfiguration上的 @AutoConfigurationPackage
 
+![1574233243394](E:\study\springboot\spring-boot\assets\1574233243394.png)
+
+查看该注解
+
+![1574233624274](E:\study\springboot\spring-boot\assets\1574233624274.png)
+
+类似于import的类 实现
+
+![1574233653903](E:\study\springboot\spring-boot\assets\1574233653903.png)
+
+该方式 会被利用来做 包扫描 例如JPA 等
 
 ## 3.自定义Spring boot自动装配
+
+1.自动装配class命名潜规则
+
+xxxAutoConfiguration
+
+2.自动装配package命名潜规则
+
+${ root-package }
+
+|-autoconfigure
+
+​	|-${module-package }
+
+​		|-xxxAutoConfiguration
+
+​		|-${ sub-module-package}
+
+​			|-...
+
+3.自定义
 
 
 
