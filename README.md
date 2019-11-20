@@ -2384,21 +2384,23 @@ deferredImportSelectors队列放值。
 
 而自动导入的 应该是 AutoConfigurationGroup
 
-![1574230528943](E:\study\springboot\spring-boot\assets\1574230528943.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574230528943.png?raw=true)
 
 **具体的排序：**
 
-![1574230544500](E:\study\springboot\spring-boot\assets\1574230544500.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574230544500.png?raw=true)
 
 **真正的排序：**
 
-![1574230564837](E:\study\springboot\spring-boot\assets\1574230564837.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574230564837.png?raw=true)
 
-以上 就是   @EnableAutoConfiguration 排序自动装配组件
+以上 就是   **@EnableAutoConfiguration 排序自动装配组件**
 
 AutoConfigurationSorter类排序 处理的  @AutoConfigureAfter @AutoConfigureBefore  @AutoConfigureOrder 注解
 
-获得排序
+获得排序。
+
+**@EnableAutoConfiguration 自动装配的Basepackages**
 
 
 
