@@ -2378,11 +2378,27 @@ deferredImportSelectors队列放值。
 
 获取导入集合的实现：
 
+默认（未指定）是DeferredImportSelectorGrouping 
+
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574155591843.png?raw=true)
 
-**@EnableAutoConfiguration 排序自动装配组件：**
+而自动导入的 应该是 AutoConfigurationGroup
 
+![1574230528943](E:\study\springboot\spring-boot\assets\1574230528943.png)
 
+**具体的排序：**
+
+![1574230544500](E:\study\springboot\spring-boot\assets\1574230544500.png)
+
+**真正的排序：**
+
+![1574230564837](E:\study\springboot\spring-boot\assets\1574230564837.png)
+
+以上 就是   @EnableAutoConfiguration 排序自动装配组件
+
+AutoConfigurationSorter类排序 处理的  @AutoConfigureAfter @AutoConfigureBefore  @AutoConfigureOrder 注解
+
+获得排序
 
 
 
