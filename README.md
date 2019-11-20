@@ -2196,7 +2196,7 @@ AutoConfigurationMetadataLoader #loadMetadata 返回 PropertiesAutoConfiguration
 
 1.获取 自动装在的 k
 
-2.获取   自动装在的 k/v
+2.获取   自动装在的 k/v（候选列表）
 
 3.获取注解排除的 类名 也就是k中的
 
@@ -2364,21 +2364,21 @@ org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfig
 
 deferredImportSelectors队列放值。
 
-![1574057414456](E:\study\springboot\spring-boot\assets\1574057414456.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574057414456.png?raw=true)
 
 然后 在 ConfigurationClassParser # parse 中 processDeferredImportSelectors的执行
 
 也就是，DeferredImportSelectorHolder 队列在  ConfigurationClassParser #processDeferredImportSelectors 中执行
 
-![1574045827648](E:\study\springboot\spring-boot\assets\1574045827648.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574045827648.png?raw=true)
 
 具体代码：（先排序）（最后倒入  会递归处理同样导入的需要导入的）
 
-![1574155560338](E:\study\springboot\spring-boot\assets\1574155560338.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574155560338.png?raw=true)
 
 获取导入集合的实现：
 
-![1574155591843](E:\study\springboot\spring-boot\assets\1574155591843.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574155591843.png?raw=true)
 
 **@EnableAutoConfiguration 排序自动装配组件：**
 
