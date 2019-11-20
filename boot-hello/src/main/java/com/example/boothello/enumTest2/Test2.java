@@ -19,7 +19,7 @@ public class Test2 {
         System.out.println("值是 --> " + name);
         System.out.println("===========================");
         ReflectionUtils.doWithMethods(MyAnnotion.class,
-            method -> System.out.println("方法名 -->" + method.getName()+"  值-->"+ReflectionUtils.invokeMethod(method,annotation)),
+            method -> System.out.println("方法名 -->" + method.getName() + "  值-->" + ReflectionUtils.invokeMethod(method, annotation)),
             method -> !method.getDeclaringClass().equals(Annotation.class));
     }
 }

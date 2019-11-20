@@ -2404,25 +2404,25 @@ AutoConfigurationSorter类排序 处理的  @AutoConfigureAfter @AutoConfigureBe
 
 @EnableAutoConfiguration上的 @AutoConfigurationPackage
 
-![1574233243394](E:\study\springboot\spring-boot\assets\1574233243394.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574233243394.png?raw=true)
 
 查看该注解
 
-![1574233624274](E:\study\springboot\spring-boot\assets\1574233624274.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574233624274.png?raw=true)
 
 类似于import的类 实现
 
-![1574233653903](E:\study\springboot\spring-boot\assets\1574233653903.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574233653903.png?raw=true)
 
 该方式 会被利用来做 包扫描 例如JPA 等
 
 ## 3.自定义Spring boot自动装配
 
-1.自动装配class命名潜规则
+**1.自动装配class命名潜规则**
 
 xxxAutoConfiguration
 
-2.自动装配package命名潜规则
+**2.自动装配package命名潜规则**
 
 ${ root-package }
 
@@ -2436,7 +2436,15 @@ ${ root-package }
 
 ​			|-...
 
-3.自定义
+**3.starter 名**
+
+${ module}-spring-boot-starter   （第三方）
+
+spring-boot-starter-${ module}   （官方）
+
+**4.自定义**
+
+定义一个formatter的 starter
 
 
 

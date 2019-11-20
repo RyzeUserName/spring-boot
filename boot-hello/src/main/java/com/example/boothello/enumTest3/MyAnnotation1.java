@@ -37,6 +37,6 @@ public @interface MyAnnotation1 {
     /**
      * @return 事务管理
      */
-    @AliasFor(annotation = Transactional.class,value = "value")
+    @AliasFor(annotation = Transactional.class, value = "value")
     String tm() default "txManager";
 }
