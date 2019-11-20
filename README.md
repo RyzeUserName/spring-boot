@@ -2568,11 +2568,17 @@ public class FormatterBootStrap {
 
 {测试=格式化}
 
-至此 完成了最简单的 自定义 starter模块
+至此 完成了最简单的 自定义 starter模块，之后会更加丰富
 
 ## 4.Spring boot条件化自动装配
 
+即@Conditional 与@Configuration 组合使用，在AutoConfigurationImportFilter 的实现类 OnClassCondition 中过滤非法自动装配的Class,间接的接触条件注解 ConditionalOnClass
 
+**1.Class条件注解**  @ConditionalOnClass  @ConditionalOnMissingClass
+
+均使用@Conditional 实现，具体实现：
+
+![1574245909729](E:\study\springboot\spring-boot\assets\1574245909729.png)
 
 # 10.初始化
 
