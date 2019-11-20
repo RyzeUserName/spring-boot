@@ -2214,6 +2214,178 @@ AutoConfigurationMetadataLoader #loadMetadata 返回 PropertiesAutoConfiguration
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1573822131633.png?raw=true)
 
+**实现自定义的监听类**
+
+```java
+/**
+ * 自定义实现
+ * @author Ryze
+ * @date 2019-11-15 20:54
+ */
+public class MyListener implements AutoConfigurationImportListener {
+    /**
+     * Handle an auto-configuration import event.
+     * @param event the event to respond to
+     */
+    @Override
+    public void onAutoConfigurationImportEvent(AutoConfigurationImportEvent event) {
+        //当前 classLoader
+        ClassLoader classLoader = event.getClass().getClassLoader();
+        //加载资源 k
+        List<String> strings = SpringFactoriesLoader.loadFactoryNames(EnableAutoConfiguration.class, classLoader);
+        //实际装载
+        List<String> candidateConfigurations = event.getCandidateConfigurations();
+        //获取排除的名单
+        Set<String> exclusions = event.getExclusions();
+        //输出信息
+        System.out.printf("自动装配 Class 名单-候选数量:%d,实际数量:%d,排除数量:%d", strings.size(), candidateConfigurations.size(), exclusions.size());
+        System.out.println();
+        System.out.println("实际装载class：");
+        candidateConfigurations.forEach(System.out::println);
+        System.out.println("排除class：");
+        exclusions.forEach(System.out::println);
+    }
+}
+
+```
+
+
+
+resources 目录下新建 META-INF 创建 spring.factories 文件
+
+增加内容  ：org.springframework.boot.autoconfigure.AutoConfigurationImportListener=com.example.boothello.listener.MyListener
+
+自定义启动类：
+
+```java
+/**
+ * 启动类
+ * @author Ryze
+ * @date 2019-11-04 16:01
+ */
+@EnableAutoConfiguration(exclude = SpringApplicationAdminJmxAutoConfiguration.class)
+public class ConditionBootStrap {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(ConditionBootStrap.class)
+            .web(WebApplicationType.NONE)
+            .run(args)
+            .close();
+    }
+}
+
+```
+
+结果：
+
+自动装配 Class 名单-候选数量:176,实际数量:65,排除数量:1
+实际装载class：
+org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration
+org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
+org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+org.springframework.boot.autoconfigure.dao.PersistenceExceptionTranslationAutoConfiguration
+org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration
+org.springframework.boot.autoconfigure.http.codec.CodecsAutoConfiguration
+org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration
+org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
+org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+org.springframework.boot.autoconfigure.mail.MailSenderValidatorAutoConfiguration
+org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
+org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
+org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration
+org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration
+org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration
+org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
+org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+org.springframework.boot.autoconfigure.websocket.reactive.WebSocketReactiveAutoConfiguration
+org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.audit.AuditAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.audit.AuditEventsEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.beans.BeansEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.cloudfoundry.servlet.CloudFoundryActuatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.cloudfoundry.reactive.ReactiveCloudFoundryActuatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.condition.ConditionsReportEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.context.properties.ConfigurationPropertiesReportEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.context.ShutdownEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticsearchHealthIndicatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.env.EnvironmentEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.health.HealthEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.health.HealthIndicatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.info.InfoContributorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.info.InfoEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.logging.LogFileWebEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.logging.LoggersEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.management.HeapDumpWebEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.management.ThreadDumpEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.CompositeMeterRegistryAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.MetricsEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.cache.CacheMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.jdbc.DataSourcePoolMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.web.client.RestTemplateMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.web.reactive.WebFluxMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.web.servlet.WebMvcMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.metrics.web.tomcat.TomcatMetricsAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.mongo.MongoHealthIndicatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.redis.RedisHealthIndicatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.scheduling.ScheduledTasksEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.system.DiskSpaceHealthIndicatorAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.trace.http.HttpTraceAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.trace.http.HttpTraceEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.web.mappings.MappingsEndpointAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextAutoConfiguration
+org.springframework.boot.actuate.autoconfigure.web.servlet.ServletManagementContextAutoConfiguration
+排除class：
+org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+
+**@EnableAutoConfiguration 的生命周期**
+
+该注解的Import AutoConfigurationImportSelector.class  
+
+而 AutoConfigurationImportSelector  implements DeferredImportSelector  
+
+字面意思 DeferredImportSelector  就是延迟选择导入，当所有的 @Configuration 处理完之后 才运作，可通过
+
+实现Ordered接口调整优先执行顺序，AutoConfigurationImportSelector  其优先级最低
+
+（Ordered.LOWEST_PRECEDENCE - 1）
+
+而 AutoConfigurationImportSelector # selectImports 是在  ConfigurationClassParser # processImports 中执行，往
+
+deferredImportSelectors队列放值。
+
+![1574057414456](E:\study\springboot\spring-boot\assets\1574057414456.png)
+
+然后 在 ConfigurationClassParser # parse 中 processDeferredImportSelectors的执行
+
+也就是，DeferredImportSelectorHolder 队列在  ConfigurationClassParser #processDeferredImportSelectors 中执行
+
+![1574045827648](E:\study\springboot\spring-boot\assets\1574045827648.png)
+
+具体代码：（先排序）（最后倒入  会递归处理同样导入的需要导入的）
+
+![1574155560338](E:\study\springboot\spring-boot\assets\1574155560338.png)
+
+获取导入集合的实现：
+
+![1574155591843](E:\study\springboot\spring-boot\assets\1574155591843.png)
+
+**@EnableAutoConfiguration 排序自动装配组件：**
+
+
+
+
+
 ## 3.自定义Spring boot自动装配
 
 
