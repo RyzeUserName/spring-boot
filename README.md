@@ -2576,7 +2576,7 @@ public class FormatterBootStrap {
 
 **1.Class条件注解**  @ConditionalOnClass  @ConditionalOnMissingClass
 
-均使用@Conditional 实现，具体实现：
+均使用@Conditional 实现，OnClassCondition 具体实现：
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574245909729.png?raw=true)
 
@@ -2696,7 +2696,65 @@ public class FormatterBootStrap {
 
 实际上 jackson 也是这么装配来的
 
-![1574248110523](E:\study\springboot\spring-boot\assets\1574248110523.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574248110523.png?raw=true)
+
+那么装配的bean 是否可以复用呢  ？肯定是可以的，下面接着看
+
+**2 Bean的条件注解**  @ConditionalOnBean   @ConditionalOnMissingBean
+
+与 上面区别就是 bean的条件注解匹配的是 BeanFactory中的Bean类型和名字，class的条件注解匹配的是上下文中已处理的BeanDefinition  
+
+实现是OnBeanCondition：
+
+![1574306151470](E:\study\springboot\spring-boot\assets\1574306151470.png)
+
+以上就是对这几个注解的处理，其实大致过程很相似，先构建bean 的表达式，BeanSearchSpec 是对 注解和bean 的包装
+
+（SearchStrategy 匹配的范围，当前/祖先/全部）@ConditionalOnBean 、@ConditionalOnSingleCandidate 、
+
+@ConditionalOnMissingBean搜索策略  都是  SearchStrategy.ALL（全部）
+
+![1574323088186](E:\study\springboot\spring-boot\assets\1574323088186.png)
+
+然后归结于getMatchingBeans 方法 获取匹配的bean
+
+![1574324810348](E:\study\springboot\spring-boot\assets\1574324810348.png)
+
+获取忽略的bean 和 根据注解type、value的是现实一样的，如下
+
+![1574324830394](E:\study\springboot\spring-boot\assets\1574324830394.png)
+
+先获取BeanTypeRegistry 后调用 getNamesForType 获取结果，详情：
+
+![1574331303002](E:\study\springboot\spring-boot\assets\1574331303002.png)
+
+也就是
+
+![1574331328565](E:\study\springboot\spring-boot\assets\1574331328565.png)
+
+最后调用 ：
+
+![1574331349876](E:\study\springboot\spring-boot\assets\1574331349876.png)
+
+也就是先从默认的bean工厂获取单例bean ，没有的话才做其他处理，我们回到 OnBeanCondition类，其实现了 SpringBootCondition
+
+![1574331505578](E:\study\springboot\spring-boot\assets\1574331505578.png)
+
+排除bean的注册，也就是说 标注了@ConditionalOnBean @ConditionalOnSingleCandidate 
+
+@ConditionalOnMissingBean的类，并不会被着急创建成bean，在注册成bean 的时候会被 ConditionEvaluator # 
+
+shouldSkip  跳过，getSingleton 返回null ，然后从bean的定义中寻找。这就是为啥，@ConditionalOnBean
+
+@ConditionalOnMissingBean 强烈要求仅在自动装配中使用，主要是其基于bean的定义的名称、类型匹配的
+
+下面是对 annotation的处理
+
+![1574324909193](E:\study\springboot\spring-boot\assets\1574324909193.png)
+
+最终返回匹配的结果
+
+
 
 # 10.初始化
 
