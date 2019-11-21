@@ -23,9 +23,12 @@ public class FormatterBootStrap {
 
         Map<String, Object> map = new HashMap<>();
         map.put("测试", "格式化");
-        Formatter bean = run.getBean(Formatter.class);
-        String formatter = bean.formatter(map);
-        System.out.printf("实现类 %s,格式化结果%s", bean.getClass().getSimpleName(), formatter);
+//        Formatter bean = run.getBean(Formatter.class);
+//        String formatter = bean.formatter(map);
+//        System.out.printf("实现类 %s,格式化结果%s", bean.getClass().getSimpleName(), formatter);
+//        System.out.println();
+        Map<String, Formatter> beansOfType = run.getBeansOfType(Formatter.class);
+        beansOfType.forEach((k, v) -> System.out.printf("实现类 %s,名字 %s,格式化结果%s", v.getClass().getSimpleName(), k, v.formatter(map)));
         System.out.println();
         run.close();
     }

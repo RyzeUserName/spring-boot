@@ -1,7 +1,12 @@
 package com.example.formatterspringbootstarter.autoconfigure.formatter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2019-11-20 16:48
  */
 @Configuration
+@AutoConfigureAfter(value = JacksonAutoConfiguration.class)
 public class FormatterAutoConfiguration {
     @Bean
     @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
@@ -20,7 +26,14 @@ public class FormatterAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    @ConditionalOnMissingBean(type = "com.fasterxml.jackson.databind.ObjectMapper")
     public Formatter jsonFormatter() {
         return new JsonFormatter();
+    }
+
+    @Bean
+    @ConditionalOnBean(ObjectMapper.class)
+    public Formatter ObjectMapperFormatter(ObjectMapper objectMapper) {
+        return new JsonFormatter(objectMapper);
     }
 }

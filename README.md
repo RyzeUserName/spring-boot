@@ -2706,7 +2706,7 @@ public class FormatterBootStrap {
 
 实现是OnBeanCondition：
 
-![1574306151470](E:\study\springboot\spring-boot\assets\1574306151470.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574306151470.png?raw=true)
 
 以上就是对这几个注解的处理，其实大致过程很相似，先构建bean 的表达式，BeanSearchSpec 是对 注解和bean 的包装
 
@@ -2714,31 +2714,31 @@ public class FormatterBootStrap {
 
 @ConditionalOnMissingBean搜索策略  都是  SearchStrategy.ALL（全部）
 
-![1574323088186](E:\study\springboot\spring-boot\assets\1574323088186.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574323088186.png?raw=true)
 
 然后归结于getMatchingBeans 方法 获取匹配的bean
 
-![1574324810348](E:\study\springboot\spring-boot\assets\1574324810348.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574324810348.png?raw=true)
 
 获取忽略的bean 和 根据注解type、value的是现实一样的，如下
 
-![1574324830394](E:\study\springboot\spring-boot\assets\1574324830394.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574324830394.png?raw=true)
 
 先获取BeanTypeRegistry 后调用 getNamesForType 获取结果，详情：
 
-![1574331303002](E:\study\springboot\spring-boot\assets\1574331303002.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574331303002.png?raw=true)
 
 也就是
 
-![1574331328565](E:\study\springboot\spring-boot\assets\1574331328565.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574331328565.png?raw=true)
 
 最后调用 ：
 
-![1574331349876](E:\study\springboot\spring-boot\assets\1574331349876.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574331349876.png?raw=true)
 
 也就是先从默认的bean工厂获取单例bean ，没有的话才做其他处理，我们回到 OnBeanCondition类，其实现了 SpringBootCondition
 
-![1574331505578](E:\study\springboot\spring-boot\assets\1574331505578.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574331505578.png?raw=true)
 
 排除bean的注册，也就是说 标注了@ConditionalOnBean @ConditionalOnSingleCandidate 
 
@@ -2750,9 +2750,127 @@ shouldSkip  跳过，getSingleton 返回null ，然后从bean的定义中寻找�
 
 下面是对 annotation的处理
 
-![1574324909193](E:\study\springboot\spring-boot\assets\1574324909193.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574324909193.png?raw=true)
 
 最终返回匹配的结果
+
+根据 以上的@ConditionalOnBean  @ConditionalOnMissingBean 的实现，修改starter的实现
+
+也就是引入jackson的bean 那么 查看jackson的自动装配
+
+![1574336544103](E:\study\springboot\spring-boot\assets\1574336544103.png)
+
+修改starter：
+
+修改json的构造
+
+```java
+/**
+ * json 格式化
+ * @author Ryze
+ * @date 2019-11-20 18:43
+ */
+public class JsonFormatter implements Formatter {
+    private final ObjectMapper objectMapper;
+
+    public JsonFormatter() {
+        this(new ObjectMapper());
+    }
+
+    public JsonFormatter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public String formatter(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+}
+
+```
+
+修改自动装配
+
+```java
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ * @AutoConfigureAfter(value = JacksonAutoConfiguration.class) 是因为装载顺序的原因
+ */
+@Configuration
+@AutoConfigureAfter(value = JacksonAutoConfiguration.class)
+public class FormatterAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    @ConditionalOnMissingBean(type = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter jsonFormatter() {
+        return new JsonFormatter();
+    }
+
+    @Bean
+    @ConditionalOnBean(ObjectMapper.class)
+    public Formatter ObjectMapperFormatter(ObjectMapper objectMapper) {
+        return new JsonFormatter(objectMapper);
+    }
+}
+```
+
+然后重新 mvn clean install 
+
+在 测试项目引入依赖
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+```
+
+修改启动类：
+
+```java
+/**
+ * 引导启动类
+ * @author Ryze
+ * @date 2019-11-20 16:59
+ */
+@EnableAutoConfiguration
+public class FormatterBootStrap {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext run = new SpringApplicationBuilder(FormatterBootStrap.class)
+            .web(WebApplicationType.NONE)
+            .run(args);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("测试", "格式化");
+        Map<String, Formatter> beansOfType = run.getBeansOfType(Formatter.class);
+        beansOfType.forEach((k, v) -> System.out.printf("实现类 %s,名字 %s,格式化结果%s", v.getClass().getSimpleName(), k, v.formatter(map)));
+        System.out.println();
+        run.close();
+    }
+}
+```
+
+运行结果：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
+
+也就是说 引入spring-boot-starter-web 实际上相当于 满足 jackson bean的 初始化，其存在那么会被自动装配
+
+**属性条件注解**
+
+
 
 
 
