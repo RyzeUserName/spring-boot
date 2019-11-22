@@ -3027,6 +3027,78 @@ ConfigurableApplicationContext 是 ResourceLoader 的子类
 
 被 AbstractApplicationContext  # refresh 调用，上下文启动过程中，那么传递的是当前spring应用上下文实例
 
+资源加载 ResourceLoader 的类图：
+
+![1574418630888](E:\study\springboot\spring-boot\assets\1574418630888.png)
+
+ResourcePatternResolver 是 ResourceLoader 的扩展接口，其实现类 PathMatchingResourcePatternResolver：
+
+![1574419456962](E:\study\springboot\spring-boot\assets\1574419456962.png)
+
+关联到 AbstractApplicationContext （DefaultResourceLoader的实现类）：
+
+![1574419468349](E:\study\springboot\spring-boot\assets\1574419468349.png)
+
+AbstractApplicationContext 实现了 ConfigurableApplicationContext 并继承了 DefaultResourceLoader，并未覆盖
+
+DefaultResourceLoader# getResource  也就是说默认情况下 其实现是 DefaultResourceLoader，默认的
+
+Resourceloader 就是  DefaultResourceLoader
+
+其实现获取资源的方法是：
+
+![1574423413975](E:\study\springboot\spring-boot\assets\1574423413975.png)
+
+其中   ProtocolResolver 是spring 扩展的协议解析![1574423431857](E:\study\springboot\spring-boot\assets\1574423431857.png)
+
+具体定义如下：
+
+![1574423492742](E:\study\springboot\spring-boot\assets\1574423492742.png)
+
+那么 我们整合到starter中
+
+```java
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ */
+@Configuration
+@AutoConfigureAfter(value = JacksonAutoConfiguration.class)
+@ConditionalOnProperty(prefix = "formatter", name = "enable", havingValue = "true",matchIfMissing =true )
+@ConditionalOnResource(resources = "1.properties") //只有 1.properties 存在才会加载装配
+public class FormatterAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    @ConditionalOnMissingBean(type = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter jsonFormatter() {
+        return new JsonFormatter();
+    }
+
+    @Bean
+    @ConditionalOnBean(ObjectMapper.class)
+    public Formatter ObjectMapperFormatter(ObjectMapper objectMapper) {
+        return new JsonFormatter(objectMapper);
+    }
+}
+```
+
+starter重新 intall
+
+在测试项目 resource新建文件1.properties
+
+运行结果：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
+
+**Web 应用的条件注解**
+
 
 
 # 10.初始化
