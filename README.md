@@ -2993,7 +2993,7 @@ ConditionalOnProperty#matchIfMissing为true  也就是 不写的话 也是匹配
 
 这个方法会被在 ConditionEvaluator #shouldSkip 方法中调用，其context 在其初始化时调用
 
-![1574412728581](E:\study\springboot\spring-boot\assets\1574412728581.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574412728581.png?raw=true)
 
 调用这个构造的地方有5处：
 
@@ -3013,17 +3013,17 @@ ConditionalOnProperty#matchIfMissing为true  也就是 不写的话 也是匹配
 
 ResourceLoaderAware 的 setResourceLoader  会被 ApplicationContextAwareProcessor 调用：
 
-![1574414308589](E:\study\springboot\spring-boot\assets\1574414308589.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574414308589.png?raw=true)
 
 其传递的上下文是在构造中初始化：
 
-![1574414347331](E:\study\springboot\spring-boot\assets\1574414347331.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574414347331.png?raw=true)
 
 ConfigurableApplicationContext 是 ResourceLoader 的子类
 
 其初始化是在  AbstractApplicationContext #  prepareBeanFactory
 
-![1574414496389](E:\study\springboot\spring-boot\assets\1574414496389.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574414496389.png?raw=true)
 
 被 AbstractApplicationContext  # refresh 调用，上下文启动过程中，那么传递的是当前spring应用上下文实例
 
