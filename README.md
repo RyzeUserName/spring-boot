@@ -3097,7 +3097,11 @@ starter重新 intall
 
 实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
 
-**Web 应用的条件注解**
+**Web 应用的条件注解**  @ConditionalOnWebApplication  @ConditionalOnNotWebApplication
+
+是否在 web环境下，并引入详细的type
+
+![1574424764192](E:\study\springboot\spring-boot\assets\1574424764192.png)
 
 
 
