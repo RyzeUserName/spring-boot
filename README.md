@@ -2985,6 +2985,10 @@ ConditionalOnProperty#matchIfMissing为true  也就是 不写的话 也是匹配
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574407391761.png?raw=true)
 
+只有resources 资源存在才匹配，实现是在 OnResourceCondition 类
+
+
+
 # 10.初始化
 
 # 11.运行
