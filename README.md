@@ -3107,11 +3107,11 @@ starter重新 intall
 
 实现是在 OnWebApplicationCondition ，匹配为：
 
-![1574425842347](E:\study\springboot\spring-boot\assets\1574425842347.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574425842347.png?raw=true)
 
 具体的是现实：
 
-![1574425864603](E:\study\springboot\spring-boot\assets\1574425864603.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574425864603.png?raw=true)
 
 整合starter
 
@@ -3123,7 +3123,9 @@ starter重新 intall
 
 实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
 
+**Spring表达式条件注解**
 
+@ConditionalOnExpression
 
 # 10.初始化
 
