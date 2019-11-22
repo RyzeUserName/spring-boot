@@ -5,6 +5,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class FormatterBootStrap {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = new SpringApplicationBuilder(FormatterBootStrap.class)
             .web(WebApplicationType.NONE)
+           // .properties("formatter.enable=true")
             .run(args);
 
         Map<String, Object> map = new HashMap<>();
@@ -28,6 +30,9 @@ public class FormatterBootStrap {
 //        System.out.printf("实现类 %s,格式化结果%s", bean.getClass().getSimpleName(), formatter);
 //        System.out.println();
         Map<String, Formatter> beansOfType = run.getBeansOfType(Formatter.class);
+        if (CollectionUtils.isEmpty(beansOfType)) {
+            throw new IllegalArgumentException("未找到匹配类型");
+        }
         beansOfType.forEach((k, v) -> System.out.printf("实现类 %s,名字 %s,格式化结果%s", v.getClass().getSimpleName(), k, v.formatter(map)));
         System.out.println();
         run.close();

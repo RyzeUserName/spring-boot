@@ -2758,7 +2758,7 @@ shouldSkip  跳过，getSingleton 返回null ，然后从bean的定义中寻找�
 
 也就是引入jackson的bean 那么 查看jackson的自动装配
 
-![1574336544103](E:\study\springboot\spring-boot\assets\1574336544103.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574336544103.png?raw=true)
 
 修改starter：
 
@@ -2855,6 +2855,9 @@ public class FormatterBootStrap {
         Map<String, Object> map = new HashMap<>();
         map.put("测试", "格式化");
         Map<String, Formatter> beansOfType = run.getBeansOfType(Formatter.class);
+       if (CollectionUtils.isEmpty(beansOfType)) {
+            throw new IllegalArgumentException("未找到匹配类型");
+        }
         beansOfType.forEach((k, v) -> System.out.printf("实现类 %s,名字 %s,格式化结果%s", v.getClass().getSimpleName(), k, v.formatter(map)));
         System.out.println();
         run.close();
@@ -2870,9 +2873,117 @@ public class FormatterBootStrap {
 
 **属性条件注解**
 
+@ConditionalOnProperty，扩展于Spring Enviroment
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574393651488.png?raw=true)
+
+调整starter
+
+```java
+
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ * 匹配formatter.enable的值 是否为true
+ */
+@Configuration
+@AutoConfigureAfter(value = JacksonAutoConfiguration.class)
+@ConditionalOnProperty(prefix = "formatter", name = "enable", havingValue = "true")
+public class FormatterAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    @ConditionalOnMissingBean(type = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter jsonFormatter() {
+        return new JsonFormatter();
+    }
+
+    @Bean
+    @ConditionalOnBean(ObjectMapper.class)
+    public Formatter ObjectMapperFormatter(ObjectMapper objectMapper) {
+        return new JsonFormatter(objectMapper);
+    }
+}
+```
+
+重新安装starter依赖
+
+测试项目运行得到：
+
+Exception in thread "main" java.lang.IllegalArgumentException: 未找到匹配类型
+	at com.example.boothello.starterTest1.FormatterBootStrap.main(FormatterBootStrap.java:33)
+
+只有 formatter.enable=true 才会被装载
+
+修改测试项目的启动类
+
+```java
+/**
+ * 引导启动类
+ * @author Ryze
+ * @date 2019-11-20 16:59
+ */
+@EnableAutoConfiguration
+public class FormatterBootStrap {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext run = new SpringApplicationBuilder(FormatterBootStrap.class)
+            .web(WebApplicationType.NONE)
+            .properties("formatter.enable=true")
+            .run(args);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("测试", "格式化");
+        Map<String, Formatter> beansOfType = run.getBeansOfType(Formatter.class);
+        if (CollectionUtils.isEmpty(beansOfType)) {
+            throw new IllegalArgumentException("未找到匹配类型");
+        }
+        beansOfType.forEach((k, v) -> System.out.printf("实现类 %s,名字 %s,格式化结果%s", v.getClass().getSimpleName(), k, v.formatter(map)));
+        System.out.println();
+        run.close();
+    }
+}
+```
+
+运行得到：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
+
+在测试项目的配置文件写上formatter.enable=false
+
+得到结果：
+
+Exception in thread "main" java.lang.IllegalArgumentException: 未找到匹配类型
+	at com.example.boothello.starterTest1.FormatterBootStrap.main(FormatterBootStrap.java:33)
+
+也就是说  配置文件的值会覆盖代码中设置的值
+
+**默认不写的话 就会报错，所以我们需要设置**
+
+ConditionalOnProperty#matchIfMissing为true  也就是 不写的话 也是匹配的
+
+@ConditionalOnProperty(prefix = "formatter", name = "enable", havingValue = "true",matchIfMissing =true )
+
+重新安装starter依赖
+
+运行得到：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
 
 
 
+就像是 spring的风格，我们默认使用什么什么，不用的话 可以用什么禁止掉
+
+**Resource条件注解**
+
+@ConditionalOnResource
+
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574407391761.png?raw=true)
 
 # 10.初始化
 
