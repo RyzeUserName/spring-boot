@@ -2987,6 +2987,46 @@ ConditionalOnProperty#matchIfMissing为true  也就是 不写的话 也是匹配
 
 只有resources 资源存在才匹配，实现是在 OnResourceCondition 类
 
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574412560210.png?raw=true)
+
+那么，资源加载器是 什么呢？
+
+这个方法会被在 ConditionEvaluator #shouldSkip 方法中调用，其context 在其初始化时调用
+
+![1574412728581](E:\study\springboot\spring-boot\assets\1574412728581.png)
+
+调用这个构造的地方有5处：
+
+1.AnnotatedBeanDefinitionReader 的构造 传递的资源加载器是null
+
+2.AnnotatedBeanDefinitionReader # setEnvironment  传递的资源加载器是null
+
+3.ClassPathScanningCandidateComponentProvider # isConditionMatch 最终是在 setResourceLoader 中初始化，（其 实现了 ResourceLoaderAware 作为spring bean 时 这个字段会被上下文填充 ）但是不  能确定其状态 ，存在变数
+
+4.ConfigurationClassBeanDefinitionReader 的构造 继续跟踪到 ConfigurationClassPostProcessor # processConfigBeanDefinitions 最终到setResourceLoader 始化，（其 实现了 ResourceLoaderAware 作为spring bean 时 这个字段会被上下文填充 ）但是不  能确定其状态 ，存在变数
+
+5.ConfigurationClassParser的构造 被 ConfigurationClassPostProcessor# processConfigBeanDefinitions 调用，同上了
+
+因此资源加载器 1. ResourceLoaderAware  的回调（spring 上下文）
+
+​						   2.null （默认的 DefaultResourceLoader）
+
+ResourceLoaderAware 的 setResourceLoader  会被 ApplicationContextAwareProcessor 调用：
+
+![1574414308589](E:\study\springboot\spring-boot\assets\1574414308589.png)
+
+其传递的上下文是在构造中初始化：
+
+![1574414347331](E:\study\springboot\spring-boot\assets\1574414347331.png)
+
+ConfigurableApplicationContext 是 ResourceLoader 的子类
+
+其初始化是在  AbstractApplicationContext #  prepareBeanFactory
+
+![1574414496389](E:\study\springboot\spring-boot\assets\1574414496389.png)
+
+被 AbstractApplicationContext  # refresh 调用，上下文启动过程中，那么传递的是当前spring应用上下文实例
+
 
 
 # 10.初始化
