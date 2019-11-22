@@ -3101,11 +3101,27 @@ starter重新 intall
 
 **Web 应用的条件注解**  @ConditionalOnWebApplication  @ConditionalOnNotWebApplication
 
-是否在 web环境下，并引入详细的type
+是否在 web环境下，并引入详细的type限制
 
 ![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574424764192.png?raw=true)
 
+实现是在 OnWebApplicationCondition ，匹配为：
 
+![1574425842347](E:\study\springboot\spring-boot\assets\1574425842347.png)
+
+具体的是现实：
+
+![1574425864603](E:\study\springboot\spring-boot\assets\1574425864603.png)
+
+整合starter
+
+在FormatterAutoConfiguration 添加注解 @ConditionalOnNotWebApplication 也就是只有在非 web环境才会执行装配
+
+重新inatall
+
+运行测试项目 结果：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
 
 
 

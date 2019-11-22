@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(value = JacksonAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "formatter", name = "enable", havingValue = "true",matchIfMissing =true )
 @ConditionalOnResource(resources = "1.properties")
+@ConditionalOnNotWebApplication
 public class FormatterAutoConfiguration {
     @Bean
     @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
