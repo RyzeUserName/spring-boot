@@ -3125,7 +3125,67 @@ starter重新 intall
 
 **Spring表达式条件注解**
 
-@ConditionalOnExpression
+@ConditionalOnExpression详情：
+
+![1574650363149](E:\study\springboot\spring-boot\assets\1574650363149.png)
+
+其实现类：
+
+![1574650379375](E:\study\springboot\spring-boot\assets\1574650379375.png)
+
+其实现较为简单，一般用于类似于，一个boolean 的值
+
+修改starter
+
+在自动装配的类上增加 @ConditionalOnExpression("${formatter.flag:true}")
+
+```java
+/**
+ * 格式化的装配
+ * @author Ryze
+ * @date 2019-11-20 16:48
+ */
+@Configuration
+@AutoConfigureAfter(value = JacksonAutoConfiguration.class)
+@ConditionalOnProperty(prefix = "formatter", name = "enable", havingValue = "true",matchIfMissing =true )
+@ConditionalOnResource(resources = "1.properties")
+@ConditionalOnNotWebApplication
+@ConditionalOnExpression("${formatter.flag:true}")
+public class FormatterAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter defaultFormatter() {
+        return new DefaultFormatter();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    @ConditionalOnMissingBean(type = "com.fasterxml.jackson.databind.ObjectMapper")
+    public Formatter jsonFormatter() {
+        return new JsonFormatter();
+    }
+
+    @Bean
+    @ConditionalOnBean(ObjectMapper.class)
+    public Formatter ObjectMapperFormatter(ObjectMapper objectMapper) {
+        return new JsonFormatter(objectMapper);
+    }
+}
+
+```
+
+install starter
+
+运行测试类：
+
+实现类 JsonFormatter,名字 ObjectMapperFormatter,格式化结果{"测试":"格式化"}
+
+配置文件增加：formatter.flag=false
+
+重新运行：
+
+Exception in thread "main" java.lang.IllegalArgumentException: 未找到匹配类型
+	at com.example.boothello.starterTest1.FormatterBootStrap.main(FormatterBootStrap.java:34)
 
 # 10.初始化
 
