@@ -3197,39 +3197,39 @@ Exception in thread "main" java.lang.IllegalArgumentException: 未找到匹配�
 
 点开其实现：
 
-![1574749830368](E:\study\springboot\spring-boot\assets\1574749830368.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574749830368.png?raw=true)
 
 前面的构造：
 
-![1574749845763](E:\study\springboot\spring-boot\assets\1574749845763.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574749845763.png?raw=true)
 
 看到其实现：
 
-![1574749860556](E:\study\springboot\spring-boot\assets\1574749860556.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574749860556.png?raw=true)
 
 推断web实现：
 
-![1574749881310](E:\study\springboot\spring-boot\assets\1574749881310.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574749881310.png?raw=true)
 
 然后加载spring应用上下文初始化器：
 
-![1574753028250](E:\study\springboot\spring-boot\assets\1574753028250.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/\1574753028250.png?raw=true)
 
 之后设置进去
 
-![1574753075761](E:\study\springboot\spring-boot\assets\1574753075761.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574753075761.png?raw=true)
 
 setListeners 类似以上的 setInitializers 区别在于 加载的类
 
-![1574753177983](E:\study\springboot\spring-boot\assets\1574753177983.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574753177983.png?raw=true)
 
 之后也是 设置
 
-![1574753213481](E:\study\springboot\spring-boot\assets\1574753213481.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574753213481.png?raw=true)
 
 然后推断应用引导类：
 
-![1574824630571](E:\study\springboot\spring-boot\assets\1574824630571.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1574824630571.png?raw=true)
 
 根据当前线程执行栈来判断其栈中哪个类包含main方法
 
@@ -3275,17 +3275,17 @@ SpringApplicationBuilder引导配置简化set/add
 
 ## 1.准备
 
-![1575260554408](E:\study\springboot\spring-boot\assets\1575260554408.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575260554408.png?raw=true)
 
 1.SpringApplicationRunListeners  #  getRunListeners(args);
 
-![1575339009518](E:\study\springboot\spring-boot\assets\1575339009518.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575339009518.png?raw=true)
 
 getSpringFactoriesInstances 就是从 spring.factories 读取 SpringApplicationRunListener.class的实现 别加载成bean
 
 SpringApplicationRunListeners 组合模式的实现，里面有个 List< SpringApplicationRunListener> listeners
 
-![1575339240114](E:\study\springboot\spring-boot\assets\1575339240114.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575339240114.png?raw=true)
 
 之后调用 starting 使每个listener 都启动
 
@@ -3303,7 +3303,7 @@ SpringApplicationRunListeners 组合模式的实现，里面有个 List< SpringA
 
 实现类  EventPublishingRunListener  顾名思义 实现了 事件监听法（但是 以监听器的形式实现的）
 
-![1575343214074](E:\study\springboot\spring-boot\assets\1575343214074.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575343214074.png?raw=true)
 
  SimpleApplicationEventMulticaster用于发布事件
 
@@ -3327,19 +3327,19 @@ SpringApplicationRunListeners 组合模式的实现，里面有个 List< SpringA
 
 spring 事件/监听机制 属于事件/监听器模式，可视为观察者的扩展，早在java1.0观察者被 Observable （数据的发布）、Observer （数据的接收者）实现，其关联是1 : 1 或者多：多，事件监听内容是有限制的为EventObject的实现（虽然没有明文限制，业界规则
 
-![1575363803539](E:\study\springboot\spring-boot\assets\1575363803539.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575363803539.png?raw=true)
 
 spring的事件也是如此
 
 监听者要实现 EventListener 这个接口仅仅是标记用
 
-![1575365018689](E:\study\springboot\spring-boot\assets\1575365018689.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575365018689.png?raw=true)
 
 泛型解决了对不同事件的监听（所以不建议一个接口中多个方法）
 
 而之前的版本没有泛型 只能用instanceof来判断，现在的版本只能监听具体的泛型，那么不能同时监听到别的事件，为了弥补这一缺失，引入 SmartApplicationListener
 
-![1575365726783](E:\study\springboot\spring-boot\assets\1575365726783.png)
+![image](https://github.com/RyzeUserName/spring-boot/blob/master/assets/1575365726783.png?raw=true)
 
 通过 supportsEventType  supportsSourceType 来判断需要处理的事件类型
 
