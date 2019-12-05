@@ -3191,11 +3191,157 @@ Exception in thread "main" java.lang.IllegalArgumentException: 未找到匹配�
 
 ## 1.构造阶段
 
+查看运行主类：
+
+也就是 SpringApplication.run(xxx.class, args);
+
+点开其实现：
+
+![1574749830368](E:\study\springboot\spring-boot\assets\1574749830368.png)
+
+前面的构造：
+
+![1574749845763](E:\study\springboot\spring-boot\assets\1574749845763.png)
+
+看到其实现：
+
+![1574749860556](E:\study\springboot\spring-boot\assets\1574749860556.png)
+
+推断web实现：
+
+![1574749881310](E:\study\springboot\spring-boot\assets\1574749881310.png)
+
+然后加载spring应用上下文初始化器：
+
+![1574753028250](E:\study\springboot\spring-boot\assets\1574753028250.png)
+
+之后设置进去
+
+![1574753075761](E:\study\springboot\spring-boot\assets\1574753075761.png)
+
+setListeners 类似以上的 setInitializers 区别在于 加载的类
+
+![1574753177983](E:\study\springboot\spring-boot\assets\1574753177983.png)
+
+之后也是 设置
+
+![1574753213481](E:\study\springboot\spring-boot\assets\1574753213481.png)
+
+然后推断应用引导类：
+
+![1574824630571](E:\study\springboot\spring-boot\assets\1574824630571.png)
+
+根据当前线程执行栈来判断其栈中哪个类包含main方法
+
+至此，类型推断，spring应用上下文初始化器，监听类，推断应用引导类
+
+之后就是配置阶段
+
 ## 2.配置阶段
+
+位于构造和运行阶段中间，是可选的，目的是调整构造阶段的参数、左右运行时行为。补充行为为*add方法为主，引入了
+
+SpringApplicationBuilder引导配置简化set/add
+
+以下是一些详细：
+
+
+
+| SpringApplication方法       | SpringApplicationBuilder方法 | 场景说明                                              | 默认值                                                      | 起始版本 |
+| --------------------------- | ---------------------------- | ----------------------------------------------------- | ----------------------------------------------------------- | -------- |
+| setAddCommandLineProperties | addCommandLineProperties     | 是否添加命令行                                        | true                                                        | 1.0      |
+| setAdditionalProfiles       | additionalProfiles           | 添加附加SpringProfile                                 | 空set                                                       | 1.0      |
+| setApplicationContextClass  | contextClass                 | 关联当前应用的ApplcationContext实现类                 | null                                                        | 1.0      |
+| setBanner                   | banner                       | 设置Banner选项                                        | null                                                        | 1.2      |
+| setBannerMode               | bannerMode                   | 设置应用程序运行时Banner显示的模式(OFF、CONSOLE、LOG) | CONSOLE                                                     | 1.3      |
+| setBeanNameGenerator        | beanNameGenerator            | 设置@ConfigurationBean生成bean的名称生成器            | null                                                        | 1.0      |
+| setDefaultProperties        | properties                   | 设置默认配置项                                        | null                                                        | 1.0      |
+| setEnvironment              | environment                  | 设置应用上下文的配置                                  | null                                                        | 1.0      |
+| setHeadless                 | headless                     | 设置应用程序是不应实例化AWT(java.awt.headless)        | true                                                        | 1.0      |
+| setInitializers             | 无                           | 覆盖ApplicationContextInitializer集合                 | spring.factories资源中声的ApplicationContextInitializer集合 | 1.0      |
+| addInitializers             | initializers                 | 追加到ApplicationContextInitializer集合               | 同上                                                        | 1.0      |
+| setListeners                | 无                           | 覆盖ApplicationListener集合                           | spring.factories资源中声的ApplicationListener集合           | 1.0      |
+| addListeners                | listeners                    | 追加到ApplicationListener集合                         | 同上                                                        | 1.0      |
+| setLogStartupInfo           | logStartupInfo               | 是否日志输出启动时信息                                | true                                                        | 1.0      |
+| setMainApplicationClass     | main                         | 设置Main Class 主要用于调整日志输出                   | 由deduceMainApplicationClass()方法推断                      | 1.0      |
+| setRegisterShutdownHook     | registerShutdownHook         | ApplicationContext 是否注册ShutdownHook线程           | true                                                        | 1.0      |
+| setResourceLoader           | resourceLoader               | 设置当前ApplicationContext 的resourceLoader           | null                                                        | 1.0      |
+| setSources                  | sources                      | ApplicationContext添加配置源                          | 空set                                                       | 1.0      |
+| setWebApplicationType       | web                          | 设置WebApplicationType                                | 由deduceMainApplicationClass()方法推断                      | 2.0      |
+| setWebEnvironment           | web                          | 2.0不推介使用，是否是web                              | False（1.0）                                                | 1.0      |
+| addPrimarySources           | 无                           | 添加主配置类                                          | 由SpringApplication构造参数决定                             | 2.0      |
 
 # 11.运行
 
 ## 1.准备
+
+![1575260554408](E:\study\springboot\spring-boot\assets\1575260554408.png)
+
+1.SpringApplicationRunListeners  #  getRunListeners(args);
+
+![1575339009518](E:\study\springboot\spring-boot\assets\1575339009518.png)
+
+getSpringFactoriesInstances 就是从 spring.factories 读取 SpringApplicationRunListener.class的实现 别加载成bean
+
+SpringApplicationRunListeners 组合模式的实现，里面有个 List< SpringApplicationRunListener> listeners
+
+![1575339240114](E:\study\springboot\spring-boot\assets\1575339240114.png)
+
+之后调用 starting 使每个listener 都启动
+
+2.SpringApplicationRunListener 详细（必须默认的构造两个参数：1.SpringApplication2. String[]）
+
+| 监听方法            | 运行阶段说明                                                | springboot版本 |
+| ------------------- | ----------------------------------------------------------- | -------------- |
+| starting            | spring应用刚启动                                            | 1.0            |
+| environmentPrepared | environment准备妥当 上下文加载前                            | 1.0            |
+| contextPrepared     | 上下文准备妥当，配置源之前                                  | 1.0            |
+| contextLoaded       | 上下文loaded ，refreshed之前                                | 1.0            |
+| started             | 上下文refreshed，CommandLineRunners ApplicationRunner执行前 | 1.0            |
+| running             | 运行中，命令行，run都执行过                                 | 2.0            |
+| failed              | 运行失败                                                    | 2.0            |
+
+实现类  EventPublishingRunListener  顾名思义 实现了 事件监听法（但是 以监听器的形式实现的）
+
+![1575343214074](E:\study\springboot\spring-boot\assets\1575343214074.png)
+
+ SimpleApplicationEventMulticaster用于发布事件
+
+3.spring boot事件
+
+| 监听方法            | 事件                                | springboot版本 |
+| ------------------- | ----------------------------------- | -------------- |
+| starting            | ApplicationStartingEvent            | 1.5            |
+| environmentPrepared | ApplicationEnvironmentPreparedEvent | 1.0            |
+| contextPrepared     |                                     | 1.0            |
+| contextLoaded       | ApplicationPreparedEvent            | 1.0            |
+| started             | ApplicationStartedEvent             | 1.0            |
+| running             | ApplicationReadyEvent               | 1.3            |
+| failed              | ApplicationFailedEvent              | 1.0            |
+
+ 而实现事件监听和触发的是 SimpleApplicationEventMulticaster 这个类是 springframework 那么spring的事件和 boot的
+
+事件 有什么关系和区别呢？
+
+4.理解spring 事件/监听机制
+
+spring 事件/监听机制 属于事件/监听器模式，可视为观察者的扩展，早在java1.0观察者被 Observable （数据的发布）、Observer （数据的接收者）实现，其关联是1 : 1 或者多：多，事件监听内容是有限制的为EventObject的实现（虽然没有明文限制，业界规则
+
+![1575363803539](E:\study\springboot\spring-boot\assets\1575363803539.png)
+
+spring的事件也是如此
+
+监听者要实现 EventListener 这个接口仅仅是标记用
+
+![1575365018689](E:\study\springboot\spring-boot\assets\1575365018689.png)
+
+泛型解决了对不同事件的监听（所以不建议一个接口中多个方法）
+
+而之前的版本没有泛型 只能用instanceof来判断，现在的版本只能监听具体的泛型，那么不能同时监听到别的事件，为了弥补这一缺失，引入 SmartApplicationListener
+
+![1575365726783](E:\study\springboot\spring-boot\assets\1575365726783.png)
+
+通过 supportsEventType  supportsSourceType 来判断需要处理的事件类型
 
 ## 2.上下文启动阶段
 

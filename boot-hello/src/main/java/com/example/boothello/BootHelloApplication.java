@@ -2,22 +2,15 @@ package com.example.boothello;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.context.WebServerInitializedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
 
 import java.io.IOException;
-import java.util.Set;
 
 @SpringBootApplication
 //@SpringBootConfiguration
 //@EnableAutoConfiguration
 //@ComponentScan(excludeFilters = {
 //    @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
-//    @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+//    @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)})
 public class BootHelloApplication {
 
     public static void main(String[] args) throws IOException {
@@ -38,9 +31,9 @@ public class BootHelloApplication {
 //    public ApplicationRunner runner(WebServerApplicationContext applicationContext) {
 //        return args -> System.out.println("当前webServer实现" + applicationContext.getWebServer().getClass().getName());
 //    }
-    @EventListener(WebServerInitializedEvent.class)
-    public void onWebServerRead(WebServerInitializedEvent webServerInitializedEvent) {
-        System.out.println("当前webServer实现" + webServerInitializedEvent.getWebServer().getClass().getName());
-    }
+//    @EventListener(WebServerInitializedEvent.class)
+//    public void onWebServerRead(WebServerInitializedEvent webServerInitializedEvent) {
+//        System.out.println("当前webServer实现" + webServerInitializedEvent.getWebServer().getClass().getName());
+//    }
 
 }
